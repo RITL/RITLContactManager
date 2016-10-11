@@ -6,13 +6,13 @@
 //  Copyright © 2016年 YueWen. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "RITLContactAppDelegate.h"
 
-@interface AppDelegate ()
+@interface RITLContactAppDelegate ()
 
 @end
 
-@implementation AppDelegate
+@implementation RITLContactAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
