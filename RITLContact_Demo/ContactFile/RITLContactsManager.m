@@ -6,17 +6,33 @@
 //  Copyright © 2016年 YueWen. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "RITLContactsManager.h"
+#import "RITLContacts.h"
+
+#ifdef __IPHONE_9_0
+#import "RITLContactManager.h"
+#else
 #import "RITLAddressBookContactManager.h"
+#endif
 
 
 
 @interface RITLContactsManager ()
 
+#ifndef __IPHONE_9_0
 /**
  负责针对AddressBook进行数据请求的类
  */
 @property (nonatomic, strong) RITLAddressBookContactManager * addressBokkContactManager;
+
+#else
+/**
+ 负责针对Contact进行数据请求的类
+ */
+@property (nonatomic, strong) RITLContactManager * contactManager NS_AVAILABLE_IOS(9_0);
+
+#endif
 
 @end
 
@@ -29,21 +45,14 @@
 {
     if (self = [super init])
     {
-        
-        self.addressBokkContactManager = [[RITLAddressBookContactManager alloc]init];
-        
-//        self.addressBook = ABAddressBookCreate();
-        
-//        NSLog(@"%@",@([(id)self.addressBook retainCount]));
-
-        /**
-         *  注册通讯录变动的回调
-         *
-         *  @param self.addressBook          注册的addressBook
-         *  @param addressBookChangeCallBack 变动之后进行的回调方法
-         *  @param void                      传参，这里是将自己作为参数传到方法中
-         */
-//        ABAddressBookRegisterExternalChangeCallback(self.addressBook,  addressBookChangeCallBack, (void *)CFBridgingRetain(self));
+#ifndef __IPHONE_9_0
+        if (!isAvailableContactFramework)
+        {
+          self.addressBokkContactManager = [[RITLAddressBookContactManager alloc]init];
+        }
+#else
+        self.contactManager = [[RITLContactManager alloc]init];
+#endif
         
     }
     
@@ -102,8 +111,26 @@
 //请求通讯录
 -(void)requestContactsComplete:(void (^)(NSArray<RITLContactObject *> * _Nonnull))completeBlock defendBlock:(nonnull void (^)(void))defendBlock
 {
-    //如果是addressBook
-    [self.addressBokkContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
+#ifndef __IPHONE_9_0
+    
+    if (isAvailableContactFramework)
+    {
+        //如果是addressBook
+        [self.addressBokkContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
+            
+            completeBlock(contacts);
+            
+        } defendBlock:^{
+            
+            defendBlock();
+            
+        }];
+    }
+
+#else
+    
+    //如果是contact
+    [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
         
         completeBlock(contacts);
         
@@ -112,6 +139,8 @@
         defendBlock();
         
     }];
+    
+#endif
 }
 
 @end

@@ -25,12 +25,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  联系人的类型
  */
-typedef enum : NSUInteger {
-    
-    YContactTypePerson = 0,         //个人联系人
-    YContactTypeOrigination = 1,    //公司联系人
-    
-} YContactType;
+typedef NS_ENUM(NSUInteger,RITLContactType)
+{
+    RITLContactTypePerson = 0,         /**<个人联系人*/
+    RITLContactTypeOrigination = 1,    /**<公司联系人*/
+    RITLContactTypeUnknown = 2,        /**<类型未知*/
+};
 
 
 /**
@@ -48,7 +48,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  联系人的类型
  */
-@property (nonatomic, assign)YContactType type;
+@property (nonatomic, assign)RITLContactType type;
 /**
  *  联系人的头像
  */
@@ -93,6 +93,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
  *  联系人的社交简介
  */
 @property (nonatomic, copy) NSArray <RITLContactSocialProfileObject *> * socialProfiles;
+
 
 @end
 

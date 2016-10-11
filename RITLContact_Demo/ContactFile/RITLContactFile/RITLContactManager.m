@@ -8,6 +8,8 @@
 
 #import "RITLContactManager.h"
 #import "RITLContactObject.h"
+#import "CNContactFetchRequest+RITLContactFile.h"
+#import "RITLContactObjectManager.h"
 @import Contacts;
 
 
@@ -41,13 +43,14 @@
 
 #pragma mark - public function
 
--(void)requestContactsComplete:(void (^)(NSArray * _Nonnull))completeBlock defendBlock:(void (^)(void))defendBlock
+-(void)requestContactsComplete:(void (^)(NSArray <RITLContactObject *> *))completeBlock defendBlock:(void (^)(void))defendBlock
 {
     //进行赋值
     self.completeBlock = completeBlock;
     self.defendBlock = defendBlock;
     
     //开始请求
+    [self __checkAuthorizationStatus];
 }
 
 #pragma mark - private function
@@ -82,7 +85,21 @@
  */
 - (void)__obtainContacts
 {
+    NSMutableArray <RITLContactObject *> * contacts = [NSMutableArray arrayWithCapacity:0];
+    
     //获取联系人
+    [self.contactStore enumerateContactsWithFetchRequest:[CNContactFetchRequest descriptorForAllKeys] error:nil usingBlock:^(CNContact * _Nonnull contact, BOOL * _Nonnull stop) {
+       
+        //进行对象的处理
+        RITLContactObject * contactObject = [RITLContactObjectManager contantObject:contact];
+        
+        //
+        [contacts addObject:contactObject];
+        
+    }];
+    
+    //block
+    self.completeBlock([contacts mutableCopy]);
 }
 
 

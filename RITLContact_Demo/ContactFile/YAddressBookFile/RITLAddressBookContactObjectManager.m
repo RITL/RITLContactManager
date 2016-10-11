@@ -40,7 +40,7 @@ static NSString * const RITLAddressBookContactsManager;
     RITLContactObject * contactObject = [[RITLContactObject alloc]init];
     
     //KVC赋值
-    [contactObject setValue:[NSValue valueWithPointer:recordRef] forKey:@"recordRefValue"];
+//    [contactObject setValue:[NSValue valueWithPointer:recordRef] forKey:@"recordRefValue"];
     
     //姓名对象
     contactObject.nameObject = [self __contactNameProperty];
@@ -329,7 +329,7 @@ static NSString * const RITLAddressBookContactsManager;
 /**
  *  获得联系人类型信息
  */
-+ (YContactType)__contactTypeProperty
++ (RITLContactType)__contactTypeProperty
 {
     //获得类型属性
     CFNumberRef typeIndex = ABRecordCopyValue(self.recordRef, kABPersonKindProperty);
@@ -340,10 +340,10 @@ static NSString * const RITLAddressBookContactsManager;
         //释放资源
         CFRelease(typeIndex);
         
-        return YContactTypeOrigination;
+        return RITLContactTypeOrigination;
     }
     
-    return YContactTypePerson;
+    return RITLContactTypePerson;
 }
 
 
