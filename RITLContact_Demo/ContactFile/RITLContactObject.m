@@ -34,8 +34,8 @@
 
 
 
-#pragma mark - YContactNameObject
-@implementation YContactNameObject
+#pragma mark - RITLContactNameObject
+@implementation RITLContactNameObject
 
 -(NSString *)name
 {
@@ -58,8 +58,8 @@
 
 
 
-#pragma mark - YContactPhoneObject
-@implementation YContactPhoneObject
+#pragma mark - RITLContactPhoneObject
+@implementation RITLContactPhoneObject
 
 
 
@@ -74,7 +74,7 @@
 
 
 #pragma mark -  YContactJobObject
-@implementation YContactJobObject
+@implementation RITLContactJobObject
 
 
 
@@ -89,7 +89,7 @@
 
 
 #pragma mark - YContactEmailObject
-@implementation YContactEmailObject
+@implementation RITLContactEmailObject
 
 
 
@@ -103,7 +103,7 @@
 
 
 #pragma mark - YContactAddressObject
-@implementation YContactAddressObject
+@implementation RITLContactAddressObject
 
 
 
@@ -118,7 +118,7 @@
 
 
 #pragma mark - YContactBrithdayObject
-@implementation YContactBrithdayObject
+@implementation RITLContactBrithdayObject
 
 
 
@@ -132,7 +132,7 @@
 
 
 #pragma mark - YContactInstantMessageObject
-@implementation YContactInstantMessageObject
+@implementation RITLContactInstantMessageObject
 
 
 
@@ -143,7 +143,7 @@
 
 
 #pragma mark - YContactRelatedNamesObject
-@implementation YContactRelatedNamesObject
+@implementation RITLContactRelatedNamesObject
 
 
 
@@ -155,7 +155,7 @@
 
 
 #pragma mark - YContactSocialProfileObject
-@implementation YContactSocialProfileObject
+@implementation RITLContactSocialProfileObject
 
 
 

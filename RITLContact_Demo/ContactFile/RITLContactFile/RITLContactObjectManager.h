@@ -8,6 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RITLContactObjectManager : NSObject
+NS_ASSUME_NONNULL_BEGIN
+
+
+/**
+ 针对Contacts.framework进行的封装
+ */
+NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactObjectManager : NSObject
+
+
 
 @end
+
+NS_ASSUME_NONNULL_END

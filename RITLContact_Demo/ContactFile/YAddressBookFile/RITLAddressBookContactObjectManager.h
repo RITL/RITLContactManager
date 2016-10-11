@@ -7,25 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
-@import AddressBook;
+#import <AddressBook/AddressBook.h>
 
-@class YContactObject;
+@class RITLContactObject;
 
 NS_ASSUME_NONNULL_BEGIN
 
 
-@interface RITLAddressBookContactObjectManager : NSObject
+/**
+ 针对AddressBook.framework进行封装的类
+ */
+NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactObjectManager instead") @interface RITLAddressBookContactObjectManager : NSObject
 
 
 /**
- *  根据ABRecordRef数据获得YContantObject对象
+ *  根据ABRecordRef数据获得RITLContactObject对象
  *
  *  @param recordRef ABRecordRef对象
  *
- *  @return YContantObject对象
+ *  @return RITLContactObject对象
  */
-+(YContactObject *)contantObject:(ABRecordRef)recordRef;
-
++(RITLContactObject *)contantObject:(ABRecordRef)recordRef NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactObjectManager instead");
 
 
 @end

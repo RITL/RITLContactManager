@@ -20,16 +20,18 @@ NS_ASSUME_NONNULL_BEGIN
 @interface RITLContactsManager : NSObject
 
 /**
- *  YAddressBookManager单例
+ *  RITLContactsManager单例
  */
 +(instancetype)sharedInstance;
 
+
 /**
- *  请求所有的联系人,按照添加人的时间顺序
- *
- *  @param completeBlock 完成的回调
+ 请求所有的联系人
+
+ @param completeBlock 获取到数据完成的回调
+ @param defendBlock   没有权限进行的回调
  */
-- (void)requestContactsComplete:(void (^)(NSArray <RITLContactObject *> *))completeBlock;
+- (void)requestContactsComplete:(void (^)(NSArray <RITLContactObject *> *))completeBlock defendBlock:(void(^)(void)) defendBlock;;
 
 
 @end

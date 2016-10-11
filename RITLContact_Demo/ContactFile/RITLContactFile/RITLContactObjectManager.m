@@ -8,6 +8,13 @@
 
 #import "RITLContactObjectManager.h"
 
+@import Contacts;
+
+@interface RITLContactObjectManager ()
+
+
+@end
+
 @implementation RITLContactObjectManager
 
 @end

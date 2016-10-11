@@ -10,15 +10,15 @@
 @import AddressBook;
 @import UIKit;
 
-@class YContactNameObject;
-@class YContactPhoneObject;
-@class YContactJobObject;
-@class YContactEmailObject;
-@class YContactAddressObject;
-@class YContactBrithdayObject;
-@class YContactInstantMessageObject;
-@class YContactRelatedNamesObject;
-@class YContactSocialProfileObject;
+@class RITLContactNameObject;
+@class RITLContactPhoneObject;
+@class RITLContactJobObject;
+@class RITLContactEmailObject;
+@class RITLContactAddressObject;
+@class RITLContactBrithdayObject;
+@class RITLContactInstantMessageObject;
+@class RITLContactRelatedNamesObject;
+@class RITLContactSocialProfileObject;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,11 +40,11 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  联系人的姓名对象
  */
-@property (nonatomic, strong)YContactNameObject * nameObject;
+@property (nonatomic, strong)RITLContactNameObject * nameObject;
 /**
  *  联系人的电话对象
  */
-@property (nonatomic, copy)NSArray <YContactPhoneObject *> * phoneObject;
+@property (nonatomic, copy)NSArray <RITLContactPhoneObject *> * phoneObject;
 /**
  *  联系人的类型
  */
@@ -56,15 +56,15 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  联系人的工作对象
  */
-@property (nonatomic, strong)YContactJobObject * jobObject;
+@property (nonatomic, strong)RITLContactJobObject * jobObject;
 /**
  *  联系人的邮箱地址
  */
-@property (nonatomic, copy) NSArray <YContactEmailObject *> * emailAddresses;
+@property (nonatomic, copy) NSArray <RITLContactEmailObject *> * emailAddresses;
 /**
  *  联系人的生日对象
  */
-@property (nonatomic, strong)YContactBrithdayObject * brithdayObject;
+@property (nonatomic, strong)RITLContactBrithdayObject * brithdayObject;
 /**
  *  备注
  */
@@ -80,19 +80,19 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  联系人的地址对象
  */
-@property (nonatomic, copy) NSArray <YContactAddressObject *> * addresses;
+@property (nonatomic, copy) NSArray <RITLContactAddressObject *> * addresses;
 /**
  *  联系人的即时工具
  */
-@property (nonatomic, copy) NSArray <YContactInstantMessageObject *> * instantMessage;
+@property (nonatomic, copy) NSArray <RITLContactInstantMessageObject *> * instantMessage;
 /**
  *  联系人的关联对象
  */
-@property (nonatomic, copy) NSArray <YContactRelatedNamesObject *> * relatedNames;
+@property (nonatomic, copy) NSArray <RITLContactRelatedNamesObject *> * relatedNames;
 /**
  *  联系人的社交简介
  */
-@property (nonatomic, copy) NSArray <YContactSocialProfileObject *> * socialProfiles;
+@property (nonatomic, copy) NSArray <RITLContactSocialProfileObject *> * socialProfiles;
 
 @end
 
@@ -108,7 +108,7 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  联系人的名字信息
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactNameObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactNameObject : NSObject
 /**
  *  姓名
  */
@@ -164,7 +164,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactNameObject : NSObject
 /**
  *  联系人的工作对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactJobObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactJobObject : NSObject
 /**
  *  公司(组织)
  */
@@ -190,7 +190,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactJobObject : NSObject
 /**
  *  联系人的Email对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactEmailObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactEmailObject : NSObject
 /**
  *  邮件的描述(如住宅、iCloud..)
  */
@@ -214,7 +214,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactEmailObject : NSObject
 /**
  *  联系人的电话对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactPhoneObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactPhoneObject : NSObject
 /**
  *  电话描述(如住宅，工作..)
  */
@@ -239,7 +239,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactPhoneObject : NSObject
 /**
  *  联系人的地址信息
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactAddressObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactAddressObject : NSObject
 
 /**
  *  地址的标签(比如住宅、工作...)
@@ -290,7 +290,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactAddressObject : NSObject
 /**
  *  联系人的生日对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactBrithdayObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactBrithdayObject : NSObject
 /**
  *  生日日历的识别码
  */
@@ -338,7 +338,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactBrithdayObject : NSObject
 /**
  *  联系人的即时通信对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactInstantMessageObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactInstantMessageObject : NSObject
 /**
  *  服务名称(如QQ)
  */
@@ -362,7 +362,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactInstantMessageObject : NSObject
 /**
  *  联系人的关联对象
  */
-NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactRelatedNamesObject : NSObject
+NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactRelatedNamesObject : NSObject
 
 /**
  *  关联的标签(如friend)
@@ -383,7 +383,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface YContactRelatedNamesObject : NSObject
 /**
  *  联系人的社交简介对象
  */
-NS_CLASS_AVAILABLE_IOS(7_0) @interface YContactSocialProfileObject : NSObject
+NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactSocialProfileObject : NSObject
 /**
  *  社交简介(如sinaweibo)
  */

@@ -7,24 +7,21 @@
 //
 
 #import "RITLAddressBookContactObjectManager.h"
-#import "YContactObject.h"
+#import "RITLContactObject.h"
+#import <objc/runtime.h>
 
-
-@import ObjectiveC;
-
-
-static NSString * const YContactsManager;
+static NSString * const RITLAddressBookContactsManager;
 
 @implementation RITLAddressBookContactObjectManager
 
 +(ABRecordRef)recordRef
 {
-    return (__bridge ABRecordRef)(objc_getAssociatedObject(self, &YContactsManager));
+    return (__bridge ABRecordRef)(objc_getAssociatedObject(self, &RITLAddressBookContactsManager));
 }
 
 +(void)setRecordRef:(ABRecordRef)recordRef
 {
-    objc_setAssociatedObject(self, &YContactsManager, (__bridge id)(recordRef), OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, &RITLAddressBookContactsManager, (__bridge id)(recordRef), OBJC_ASSOCIATION_ASSIGN);
 }
 
 -(void)dealloc
@@ -32,65 +29,67 @@ static NSString * const YContactsManager;
     objc_removeAssociatedObjects(self);
 }
 
+#pragma mark - public Function
 
-
-+(YContactObject *)contantObject:(ABRecordRef)recordRef
++(RITLContactObject *)contantObject:(ABRecordRef)recordRef
 {
     //设置当前的值
     self.recordRef = recordRef;
     
     //初始化一个YContactObject对象
-    YContactObject * contactObject = [[YContactObject alloc]init];
+    RITLContactObject * contactObject = [[RITLContactObject alloc]init];
     
     //KVC赋值
     [contactObject setValue:[NSValue valueWithPointer:recordRef] forKey:@"recordRefValue"];
     
     //姓名对象
-    contactObject.nameObject = [self contactNameProperty];
+    contactObject.nameObject = [self __contactNameProperty];
     
     //类型
-    contactObject.type = [self contactTypeProperty];
+    contactObject.type = [self __contactTypeProperty];
     
     //头像
-    contactObject.headImage = [self contactHeadImagePropery];
+    contactObject.headImage = [self __contactHeadImagePropery];
     
     //电话对象
-    contactObject.phoneObject = [self contactPhoneProperty];
+    contactObject.phoneObject = [self __contactPhoneProperty];
     
     //工作对象
-    contactObject.jobObject = [self contactJobProperty];
+    contactObject.jobObject = [self __contactJobProperty];
     
     //邮件对象
-    contactObject.emailAddresses = [self contactEmailProperty];
+    contactObject.emailAddresses = [self __contactEmailProperty];
     
     //地址对象
-    contactObject.addresses = [self contactAddressProperty];
+    contactObject.addresses = [self __contactAddressProperty];
     
     //生日对象
-    contactObject.brithdayObject = [self contactBrithdayProperty];
+    contactObject.brithdayObject = [self __contactBrithdayProperty];
     
     //即时通信对象
-    contactObject.instantMessage = [self contactMessageProperty];
+    contactObject.instantMessage = [self __contactMessageProperty];
     
     //关联对象
-    contactObject.relatedNames = [self contactRelatedNamesProperty];
+    contactObject.relatedNames = [self __contactRelatedNamesProperty];
     
     //社交简介
-    contactObject.socialProfiles = [self contactSocialProfilesProperty];
+    contactObject.socialProfiles = [self __contactSocialProfilesProperty];
     
     //备注
-    contactObject.note = [self contactProperty:kABPersonNoteProperty];                                  //备注
+    contactObject.note = [self __contactProperty:kABPersonNoteProperty];                                  //备注
     
     //创建时间
-    contactObject.creationDate = [self contactDateProperty:kABPersonCreationDateProperty];              //创建日期
+    contactObject.creationDate = [self __contactDateProperty:kABPersonCreationDateProperty];              //创建日期
     
     //最近一次修改的时间
-    contactObject.modificationDate = [self contactDateProperty:kABPersonModificationDateProperty];      //最近一次修改的时间
+    contactObject.modificationDate = [self __contactDateProperty:kABPersonModificationDateProperty];      //最近一次修改的时间
     
     return contactObject;
 }
 
 
+
+#pragma mark - private function
 
 /**
  *  根据属性key获得NSString
@@ -99,7 +98,7 @@ static NSString * const YContactsManager;
  *
  *  @return 字符串的值
  */
-+ (NSString *)contactProperty:(ABPropertyID) property
++ (NSString *)__contactProperty:(ABPropertyID) property
 {
     return (__bridge NSString *)(ABRecordCopyValue(self.recordRef, property));
 }
@@ -112,7 +111,7 @@ static NSString * const YContactsManager;
  *
  *  @return NSDate对象
  */
-+ (NSDate *)contactDateProperty:(ABPropertyID) property
++ (NSDate *)__contactDateProperty:(ABPropertyID) property
 {
     return (__bridge NSDate *)(ABRecordCopyValue(self.recordRef, property));
 }
@@ -122,20 +121,20 @@ static NSString * const YContactsManager;
 /**
  *  获得姓名的相关属性
  */
-+ (YContactNameObject *)contactNameProperty
++ (RITLContactNameObject *)__contactNameProperty
 {
     
-    YContactNameObject * nameObject = [[YContactNameObject alloc]init];
+    RITLContactNameObject * nameObject = [[RITLContactNameObject alloc]init];
     
-    nameObject.givenName = [self contactProperty:kABPersonFirstNameProperty];                   //名字
-    nameObject.familyName = [self contactProperty:kABPersonLastNameProperty];                   //姓氏
-    nameObject.middleName = [self contactProperty:kABPersonMiddleNameProperty];                 //名字中的信仰名称
-    nameObject.namePrefix = [self contactProperty:kABPersonPrefixProperty];                     //名字前缀
-    nameObject.nameSuffix = [self contactProperty:kABPersonSuffixProperty];                     //名字后缀
-    nameObject.nickName = [self contactProperty:kABPersonNicknameProperty];                     //名字昵称
-    nameObject.phoneticGivenName = [self contactProperty:kABPersonFirstNamePhoneticProperty];   //名字的拼音音标
-    nameObject.phoneticFamilyName = [self contactProperty:kABPersonLastNamePhoneticProperty];   //姓氏的拼音音标
-    nameObject.phoneticMiddleName = [self contactProperty:kABPersonMiddleNamePhoneticProperty]; //英文信仰缩写字母的拼音音标
+    nameObject.givenName = [self __contactProperty:kABPersonFirstNameProperty];                   //名字
+    nameObject.familyName = [self __contactProperty:kABPersonLastNameProperty];                   //姓氏
+    nameObject.middleName = [self __contactProperty:kABPersonMiddleNameProperty];                 //名字中的信仰名称
+    nameObject.namePrefix = [self __contactProperty:kABPersonPrefixProperty];                     //名字前缀
+    nameObject.nameSuffix = [self __contactProperty:kABPersonSuffixProperty];                     //名字后缀
+    nameObject.nickName = [self __contactProperty:kABPersonNicknameProperty];                     //名字昵称
+    nameObject.phoneticGivenName = [self __contactProperty:kABPersonFirstNamePhoneticProperty];   //名字的拼音音标
+    nameObject.phoneticFamilyName = [self __contactProperty:kABPersonLastNamePhoneticProperty];   //姓氏的拼音音标
+    nameObject.phoneticMiddleName = [self __contactProperty:kABPersonMiddleNamePhoneticProperty]; //英文信仰缩写字母的拼音音标
     
     return nameObject;
 }
@@ -144,13 +143,13 @@ static NSString * const YContactsManager;
 /**
  *  获得工作的相关属性
  */
-+ (YContactJobObject *)contactJobProperty
++ (RITLContactJobObject *)__contactJobProperty
 {
-    YContactJobObject * jobObject = [[ YContactJobObject alloc]init];
+    RITLContactJobObject * jobObject = [[ RITLContactJobObject alloc]init];
     
-    jobObject.organizationName = [self contactProperty:kABPersonOrganizationProperty]; //公司(组织)名称
-    jobObject.departmentName = [self contactProperty:kABPersonDepartmentProperty];     //部门
-    jobObject.jobTitle = [self contactProperty:kABPersonJobTitleProperty];             //职位
+    jobObject.organizationName = [self __contactProperty:kABPersonOrganizationProperty]; //公司(组织)名称
+    jobObject.departmentName = [self __contactProperty:kABPersonDepartmentProperty];     //部门
+    jobObject.jobTitle = [self __contactProperty:kABPersonJobTitleProperty];             //职位
     
     return jobObject;
 }
@@ -161,10 +160,10 @@ static NSString * const YContactsManager;
 /**
  *  获得Email对象的数组
  */
-+ (NSArray <YContactEmailObject *> *)contactEmailProperty
++ (NSArray <RITLContactEmailObject *> *)__contactEmailProperty
 {
     //外传数组
-    NSMutableArray <YContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:0];
     
     //获取多值属性
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonEmailProperty);
@@ -172,7 +171,7 @@ static NSString * const YContactsManager;
     //遍历添加
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
     {
-        YContactEmailObject * emailObject = [[YContactEmailObject alloc]init];
+        RITLContactEmailObject * emailObject = [[RITLContactEmailObject alloc]init];
         
         emailObject.emailTitle = (__bridge NSString *)(ABAddressBookCopyLocalizedLabel(ABMultiValueCopyLabelAtIndex(values, i)));  //邮件描述
         emailObject.emailAddress = (__bridge NSString *)(ABMultiValueCopyValueAtIndex(values, i));                                 //邮件地址
@@ -193,10 +192,10 @@ static NSString * const YContactsManager;
 /**
  *  获得Address对象的数组
  */
-+ (NSArray <YContactAddressObject *> *)contactAddressProperty
++ (NSArray <RITLContactAddressObject *> *)__contactAddressProperty
 {
     //外传数组
-    NSMutableArray <YContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:0];
     
     //获取多指属性
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonAddressProperty);
@@ -204,7 +203,7 @@ static NSString * const YContactsManager;
     //遍历添加
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
     {
-        YContactAddressObject * addressObject = [[YContactAddressObject alloc]init];
+        RITLContactAddressObject * addressObject = [[RITLContactAddressObject alloc]init];
         
         //赋值
         addressObject.addressTitle = (__bridge NSString *)ABAddressBookCopyLocalizedLabel((ABMultiValueCopyLabelAtIndex(values, i)));                    //地址标签
@@ -238,17 +237,17 @@ static NSString * const YContactsManager;
 /**
  *  获得电话号码对象数组
  */
-+ (NSArray <YContactPhoneObject *> *)contactPhoneProperty
++ (NSArray <RITLContactPhoneObject *> *)__contactPhoneProperty
 {
     //外传数组
-    NSMutableArray <YContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:0];
     
     //获得电话号码的多值对象
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonPhoneProperty);
     
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
     {
-        YContactPhoneObject * phoneObject = [[YContactPhoneObject alloc]init];
+        RITLContactPhoneObject * phoneObject = [[RITLContactPhoneObject alloc]init];
         
         //开始赋值
         phoneObject.phoneTitle = (__bridge NSString *)ABAddressBookCopyLocalizedLabel(ABMultiValueCopyLabelAtIndex(values, i)); //电话描述(如住宅、工作..)
@@ -270,7 +269,7 @@ static NSString * const YContactsManager;
 /**
  *  获得联系人的头像图片
  */
-+ (UIImage *)contactHeadImagePropery
++ (UIImage *)__contactHeadImagePropery
 {
     //首先判断是否存在头像
     if (ABPersonHasImageData(self.recordRef) == false)//没有头像，返回nil
@@ -293,13 +292,13 @@ static NSString * const YContactsManager;
 /**
  *  获得生日的相关属性
  */
-+ (YContactBrithdayObject *)contactBrithdayProperty
++ (RITLContactBrithdayObject *)__contactBrithdayProperty
 {
     //实例化对象
-    YContactBrithdayObject * brithdayObject = [[YContactBrithdayObject alloc]init];
+    RITLContactBrithdayObject * brithdayObject = [[RITLContactBrithdayObject alloc]init];
     
     //生日的日历
-    brithdayObject.brithdayDate = [self contactDateProperty:kABPersonBirthdayProperty];         //生日的时间对象
+    brithdayObject.brithdayDate = [self __contactDateProperty:kABPersonBirthdayProperty];         //生日的时间对象
     
     //获得农历日历属性的字典
     NSDictionary * brithdayDictionary = (__bridge NSDictionary *)(ABRecordCopyValue(self.recordRef, kABPersonAlternateBirthdayProperty));
@@ -330,7 +329,7 @@ static NSString * const YContactsManager;
 /**
  *  获得联系人类型信息
  */
-+ (YContactType)contactTypeProperty
++ (YContactType)__contactTypeProperty
 {
     //获得类型属性
     CFNumberRef typeIndex = ABRecordCopyValue(self.recordRef, kABPersonKindProperty);
@@ -352,10 +351,10 @@ static NSString * const YContactsManager;
 /**
  *  获得即时通信账号相关信息
  */
-+ (NSArray <YContactInstantMessageObject *> *)contactMessageProperty
++ (NSArray <RITLContactInstantMessageObject *> *)__contactMessageProperty
 {
     //存放数组
-    NSMutableArray <YContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:0];
     
     //获取数据字典
     ABMultiValueRef messages = ABRecordCopyValue(self.recordRef, kABPersonInstantMessageProperty);
@@ -367,7 +366,7 @@ static NSString * const YContactsManager;
         NSDictionary * messageDictionary = CFBridgingRelease(ABMultiValueCopyValueAtIndex(messages, i));
         
         //实例化
-        YContactInstantMessageObject * instantMessageObject = [[YContactInstantMessageObject alloc]init];
+        RITLContactInstantMessageObject * instantMessageObject = [[RITLContactInstantMessageObject alloc]init];
         
         instantMessageObject.service = [messageDictionary valueForKey:@"service"];          //服务名称(如QQ)
         instantMessageObject.userName = [messageDictionary valueForKey:@"username"];        //服务账号(如QQ号)
@@ -384,10 +383,10 @@ static NSString * const YContactsManager;
 /**
  *  获得联系人的关联人信息
  */
-+ (NSArray <YContactRelatedNamesObject *> *)contactRelatedNamesProperty
++ (NSArray <RITLContactRelatedNamesObject *> *)__contactRelatedNamesProperty
 {
     //存放数组
-    NSMutableArray <YContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:0];
     
     //获得多值属性
     ABMultiValueRef names = ABRecordCopyValue(self.recordRef, kABPersonRelatedNamesProperty);
@@ -396,7 +395,7 @@ static NSString * const YContactsManager;
     for (NSInteger i = 0; i < ABMultiValueGetCount(names); i++)
     {
         //初始化
-        YContactRelatedNamesObject * relatedName = [[YContactRelatedNamesObject alloc]init];
+        RITLContactRelatedNamesObject * relatedName = [[RITLContactRelatedNamesObject alloc]init];
         
         //赋值
         relatedName.relatedTitle = CFBridgingRelease(ABAddressBookCopyLocalizedLabel(ABMultiValueCopyLabelAtIndex(names, i))); //关联的标签(如friend)
@@ -414,10 +413,10 @@ static NSString * const YContactsManager;
 /**
  *  获得联系人的社交简介信息
  */
-+ (NSArray <YContactSocialProfileObject *> *)contactSocialProfilesProperty
++ (NSArray <RITLContactSocialProfileObject *> *)__contactSocialProfilesProperty
 {
     //外传数组
-    NSMutableArray <YContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:0];
     
     //获得多值属性
     ABMultiValueRef profiles = ABRecordCopyValue(self.recordRef, kABPersonSocialProfileProperty);
@@ -426,7 +425,7 @@ static NSString * const YContactsManager;
     for (NSInteger i = 0; i < ABMultiValueGetCount(profiles); i++)
     {
         //初始化对象
-        YContactSocialProfileObject * socialProfileObject = [[YContactSocialProfileObject alloc]init];
+        RITLContactSocialProfileObject * socialProfileObject = [[RITLContactSocialProfileObject alloc]init];
         
         //获取属性值
         NSDictionary * profileDictionary = CFBridgingRelease(ABMultiValueCopyValueAtIndex(profiles, i));
