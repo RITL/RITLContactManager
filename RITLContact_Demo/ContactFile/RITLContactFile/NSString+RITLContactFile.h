@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (RITLContactFile)
 
-
 /**
  获得联系人所有描述键的便利方法
 

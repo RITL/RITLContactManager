@@ -14,13 +14,15 @@
 
 +(NSArray<id<CNKeyDescriptor>> *)RITLContactNameKeys
 {
-    return @[CNContactNamePrefixKey,
+    return @[
+//             CNContactNamePrefixKey,
              CNContactGivenNameKey,
-             CNContactMiddleNameKey,
+//             CNContactMiddleNameKey,
              CNContactFamilyNameKey,
-             CNContactPreviousFamilyNameKey,
-             CNContactNameSuffixKey,
-             CNContactNicknameKey,];
+//             CNContactPreviousFamilyNameKey,
+//             CNContactNameSuffixKey,
+//             CNContactNicknameKey
+             ];
 }
 
 @end

@@ -13,19 +13,19 @@
 @import ObjectiveC;
 @import Contacts;
 
-static NSString * currentContact = @"currentContact";
+static NSString * currentContactKey = @"currentContact";
 
 @implementation RITLContactObjectManager
 
 +(CNContact *)currentContact
 {
-    return objc_getAssociatedObject(self, &currentContact);
+    return objc_getAssociatedObject(self, &currentContactKey);
 }
 
 
 +(void)setCurrentContact:(CNContact *)contact
 {
-    return objc_setAssociatedObject(self, &currentContact, contact, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    return objc_setAssociatedObject(self, &currentContactKey, contact, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 
@@ -63,7 +63,7 @@ static NSString * currentContact = @"currentContact";
     //邮件对象OK
     contactObject.emailAddresses = [self __contactEmailProperty];
     
-    //地址对象
+    //地址对象OK
     contactObject.addresses = [self __contactAddressProperty];
     
     //生日对象
@@ -79,7 +79,7 @@ static NSString * currentContact = @"currentContact";
     contactObject.socialProfiles = [self __contactSocialProfilesProperty];
     
     //备注OK
-//    contactObject.note = contact.note;
+    contactObject.note = [self __contactNoteProperty];
     
     //创建时间
 //    contactObject.creationDate = [self __contactDateProperty:kABPersonCreationDateProperty];              //创建日期
@@ -230,7 +230,7 @@ static NSString * currentContact = @"currentContact";
 /**
  *  获得联系人的头像图片
  */
-+ (UIImage *)__contactHeadImagePropery
++ (UIImage * __nullable)__contactHeadImagePropery
 {
     //缩略图Data
     if ([self.currentContact isKeyAvailable:CNContactThumbnailImageDataKey])
@@ -328,6 +328,21 @@ static NSString * currentContact = @"currentContact";
     
 
     return [NSArray arrayWithArray:socialProfiles];
+}
+
+
+
+/**
+ 获得联系人的备注信息
+ */
++ (NSString * __nullable)__contactNoteProperty
+{
+    if ([self.currentContact isKeyAvailable:CNContactNoteKey])
+    {
+        return self.currentContact.note;
+    }
+    
+    return nil;
 }
 
 @end

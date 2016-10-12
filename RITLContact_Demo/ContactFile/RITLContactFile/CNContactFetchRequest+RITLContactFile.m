@@ -22,7 +22,11 @@
 
 +(NSArray <id<CNKeyDescriptor>> *)__allKeys
 {
-    return @[[CNContact descriptorForAllComparatorKeys],CNContactPhoneNumbersKey,CNContactEmailAddressesKey,CNContactPostalAddressesKey,CNContactJobTitleKey,CNContactDepartmentNameKey,CNContactDepartmentNameKey];
+//    NSLog(@"contact = %@",[CNContact descriptorForAllComparatorKeys]);
+    
+    return @[[CNContact descriptorForAllComparatorKeys],CNContactPhoneNumbersKey,CNContactEmailAddressesKey,CNContactPostalAddressesKey,CNContactJobTitleKey,CNContactDepartmentNameKey,CNContactDepartmentNameKey,CNContactNoteKey];
+    
+//    return @[[CNContact descriptorForAllComparatorKeys]];
 }
 
 @end
