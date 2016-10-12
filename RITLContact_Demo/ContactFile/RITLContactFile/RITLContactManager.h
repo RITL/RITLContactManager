@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactManager : NSObject
 
+
 /**
  请求所有的联系人,按照添加人的时间顺序
  

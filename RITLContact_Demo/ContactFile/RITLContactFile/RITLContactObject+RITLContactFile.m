@@ -8,6 +8,7 @@
 
 #import "RITLContactObject+RITLContactFile.h"
 
+@import ObjectiveC;
 @import Contacts;
 
 @implementation NSObject (RITLContactFile)
@@ -65,5 +66,35 @@
 //@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *phoneticOrganizationName NS_AVAILABLE(10_12, 10_0);
 //
 //@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *note;
+
+@end
+
+
+static NSString * formattedAddressKey;
+
+@implementation RITLContactAddressObject (RITLContactFile)
+
+-(NSString *)formattedAddress
+{
+    return objc_getAssociatedObject(self, &formattedAddressKey);
+}
+
+-(void)RITLSetFormattedAddress:(NSString *)formattedAddress
+{
+    objc_setAssociatedObject(self, &formattedAddressKey, formattedAddress, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+-(void)contactObject:(CNPostalAddress *)cnAddressObject
+{
+    self.street = cnAddressObject.street;
+    self.city = cnAddressObject.city;
+    self.state = cnAddressObject.state;
+    self.postalCode = cnAddressObject.postalCode;
+    self.country = cnAddressObject.country;
+    self.ISOCountryCode = cnAddressObject.ISOCountryCode;
+    
+    //set
+    [self RITLSetFormattedAddress:[CNPostalAddressFormatter stringFromPostalAddress:cnAddressObject style:CNPostalAddressFormatterStyleMailingAddress]];
+}
 
 @end

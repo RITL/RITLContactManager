@@ -113,7 +113,7 @@
 {
 #ifndef __IPHONE_9_0
     
-    if (isAvailableContactFramework)
+    if (!isAvailableContactFramework)
     {
         //如果是addressBook
         [self.addressBokkContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {

@@ -9,6 +9,7 @@
 #import "RITLContactObjectManager.h"
 #import "RITLContactObject.h"
 #import "RITLContactObject+RITLContactFile.h"
+#import "NSString+RITLContactFile.h"
 @import ObjectiveC;
 @import Contacts;
 
@@ -59,7 +60,7 @@ static NSString * currentContact = @"currentContact";
     //工作对象
     contactObject.jobObject = [self __contactJobProperty];
     
-    //邮件对象
+    //邮件对象OK
     contactObject.emailAddresses = [self __contactEmailProperty];
     
     //地址对象
@@ -77,8 +78,8 @@ static NSString * currentContact = @"currentContact";
     //社交简介
     contactObject.socialProfiles = [self __contactSocialProfilesProperty];
     
-    //备注
-//    contactObject.note = [self __contactProperty:kABPersonNoteProperty];                                  //备注
+    //备注OK
+//    contactObject.note = contact.note;
     
     //创建时间
 //    contactObject.creationDate = [self __contactDateProperty:kABPersonCreationDateProperty];              //创建日期
@@ -101,8 +102,11 @@ static NSString * currentContact = @"currentContact";
 {
     RITLContactNameObject * nameObject = [[RITLContactNameObject alloc]init];
     
-    [nameObject contactObject:self.currentContact];
-
+    if ([self.currentContact areKeysAvailable:[NSString RITLContactNameKeys]])
+    {
+       [nameObject contactObject:self.currentContact];
+    }
+    
     return nameObject;
 }
 
@@ -126,8 +130,26 @@ static NSString * currentContact = @"currentContact";
  */
 + (NSArray <RITLContactEmailObject *> *)__contactEmailProperty
 {
+    if (![self.currentContact isKeyAvailable:CNContactEmailAddressesKey])
+    {
+        return @[];
+    }
+    
     //外传数组
-    NSMutableArray <RITLContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:self.currentContact.emailAddresses.count];
+    
+    for (CNLabeledValue * emailValue in self.currentContact.emailAddresses)
+    {
+        //初始化RITLContactEmailObject对象
+        RITLContactEmailObject * emailObject = [[RITLContactEmailObject alloc]init];
+        
+        //setValue
+        emailObject.emailTitle = emailValue.label;
+        emailObject.emailAddress = emailValue.value;
+        
+        [emails addObject:emailObject];
+        
+    }
     
     return [NSArray arrayWithArray:emails];
 }
@@ -141,8 +163,29 @@ static NSString * currentContact = @"currentContact";
  */
 + (NSArray <RITLContactAddressObject *> *)__contactAddressProperty
 {
+    if (![self.currentContact isKeyAvailable:CNContactPostalAddressesKey]) {
+        
+        return @[];
+        
+    }
+    
     //外传数组
-    NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:self.currentContact.postalAddresses.count];
+    
+    for (CNLabeledValue * addressValue in self.currentContact.postalAddresses)
+    {
+        //初始化地址对象
+        RITLContactAddressObject * addressObject = [[RITLContactAddressObject alloc]init];
+        
+        //setValues
+        addressObject.addressTitle = addressValue.label;
+        
+        //setDetailValue
+        [addressObject contactObject:addressValue.value];
+        
+        //add object
+        [addresses addObject:addressObject];
+    }
     
     return [NSArray arrayWithArray:addresses];
     
@@ -157,8 +200,14 @@ static NSString * currentContact = @"currentContact";
  */
 + (NSArray <RITLContactPhoneObject *> *)__contactPhoneProperty
 {
+    
+    if (![self.currentContact isKeyAvailable:CNContactPhoneNumbersKey])
+    {
+        return @[];
+    }
+    
     //外传数组
-    NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:0];
+    NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:self.currentContact.phoneNumbers.count];
     
     for (CNLabeledValue * phoneValue in self.currentContact.phoneNumbers)
     {
@@ -219,7 +268,13 @@ static NSString * currentContact = @"currentContact";
  */
 + (RITLContactType)__contactTypeProperty
 {
-    if (self.currentContact.contactType == CNContactTypeOrganization) {
+    if (![self.currentContact isKeyAvailable:CNContactTypeKey]) {
+        
+        return RITLContactTypeUnknown;
+        
+    }
+    
+    else if (self.currentContact.contactType == CNContactTypeOrganization) {
         
         return RITLContactTypeOrigination;
     }

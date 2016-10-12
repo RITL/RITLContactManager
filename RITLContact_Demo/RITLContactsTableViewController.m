@@ -59,9 +59,6 @@ static NSString * const reuseIdentifier = @"RightCell";
 {
     __weak typeof(self) copy_self = self;
     
-//    RITLContactObject * object= [RITLContactObject new];
-//    RITLContactObject * object1 = [object mutableCopy];
-    
     //开始请求
     [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
         

@@ -14,15 +14,15 @@
 
 +(CNContactFetchRequest *)descriptorForAllKeys
 {
-    return [[CNContactFetchRequest alloc]initWithKeysToFetch:[self allKeys]];
+    return [[CNContactFetchRequest alloc]initWithKeysToFetch:[self __allKeys]];
 }
 
 
 
 
-+(NSArray <id<CNKeyDescriptor>> *)allKeys
++(NSArray <id<CNKeyDescriptor>> *)__allKeys
 {
-    return @[[CNContact descriptorForAllComparatorKeys],CNContactPhoneNumbersKey,CNContactEmailAddressesKey,CNContactPostalAddressesKey];
+    return @[[CNContact descriptorForAllComparatorKeys],CNContactPhoneNumbersKey,CNContactEmailAddressesKey,CNContactPostalAddressesKey,CNContactJobTitleKey,CNContactDepartmentNameKey,CNContactDepartmentNameKey];
 }
 
 @end

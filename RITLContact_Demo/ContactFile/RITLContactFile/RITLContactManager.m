@@ -10,6 +10,8 @@
 #import "RITLContactObject.h"
 #import "CNContactFetchRequest+RITLContactFile.h"
 #import "RITLContactObjectManager.h"
+#import "RITLContactObject+RITLContactFile.h"
+
 @import Contacts;
 
 
@@ -92,8 +94,7 @@
        
         //进行对象的处理
         RITLContactObject * contactObject = [RITLContactObjectManager contantObject:contact];
-        
-        //
+    
         [contacts addObject:contactObject];
         
     }];

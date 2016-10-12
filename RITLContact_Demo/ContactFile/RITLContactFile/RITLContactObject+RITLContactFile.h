@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class CNContact;
+@class CNPostalAddress;
 
 @interface NSObject (RITLContactFile)
 
@@ -29,6 +30,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface RITLContactNameObject (RITLContactFile)
+
+@end
+
+
+@interface RITLContactAddressObject (RITLContactFile)
+
+/**
+ 地址的描述字符串，eg 中国 山东 潍坊 XX 261800
+ */
+@property (nonatomic, strong, readonly)NSString * formattedAddress NS_AVAILABLE_IOS(9_0);
+
+
+/**
+ 针对CNPostalAddress进行模型转换
+
+ @param cnAddressObject CNPostalAddress对象
+ */
+- (void)contactObject:(CNPostalAddress *)cnAddressObject;
+
 
 @end
 
