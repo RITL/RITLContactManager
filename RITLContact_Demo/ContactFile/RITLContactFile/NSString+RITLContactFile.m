@@ -15,13 +15,19 @@
 +(NSArray<id<CNKeyDescriptor>> *)RITLContactNameKeys
 {
     return @[
-//             CNContactNamePrefixKey,
+#ifdef __IPHONE_10_0
+             CNContactPhoneticOrganizationNameKey,
+#endif
+             CNContactNamePrefixKey,
              CNContactGivenNameKey,
-//             CNContactMiddleNameKey,
+             CNContactMiddleNameKey,
              CNContactFamilyNameKey,
-//             CNContactPreviousFamilyNameKey,
-//             CNContactNameSuffixKey,
-//             CNContactNicknameKey
+             CNContactPreviousFamilyNameKey,
+             CNContactNameSuffixKey,
+             CNContactNicknameKey,
+             CNContactPhoneticGivenNameKey,
+             CNContactPhoneticMiddleNameKey,
+             CNContactPhoneticFamilyNameKey
              ];
 }
 

@@ -96,125 +96,146 @@ NSArray<NSString *> * propertyNames(id object)
 
 -(NSString *)name
 {
-    //除nil处理
+    [self __stringHandle];
+    
+    //handle the string
+    return [[[[self.namePrefix stringByAppendingString:self.familyName] stringByAppendingString:self.middleName] stringByAppendingString:self.givenName] stringByAppendingString:self.nameSuffix];
+}
+
+
+
+/**
+ ensure the value is not nil
+ */
+- (void)__stringHandle
+{
+    self.namePrefix = (self.namePrefix) ? self.namePrefix : @"";
+    self.familyName = (self.familyName) ? self.familyName : @"";
     self.middleName = (self.middleName) ? self.middleName : @"";
     self.givenName = (self.givenName) ? self.givenName : @"";
-    self.familyName = (self.familyName) ? self.familyName : @"";
+    self.nameSuffix = (self.nameSuffix) ? self.nameSuffix : @"";
+}
+
+
+
+/**
+ 排序用的姓名
+ */
+-(NSString *)__sortName
+{
+    [self __stringHandle];
     
-    
+    //handle the string
     return [[self.familyName stringByAppendingString:self.middleName] stringByAppendingString:self.givenName];
 }
 
 @end
 
-
-
-
-
-
-
-
-
 #pragma mark - RITLContactPhoneObject
 @implementation RITLContactPhoneObject
 
-
-
 @end
-
-
-
-
-
-
-
-
 
 #pragma mark -  YContactJobObject
 @implementation RITLContactJobObject
 
-
-
 @end
-
-
-
-
-
-
-
-
 
 #pragma mark - YContactEmailObject
 @implementation RITLContactEmailObject
 
-
-
 @end
-
-
-
-
-
-
-
 
 #pragma mark - YContactAddressObject
 @implementation RITLContactAddressObject
 
-
-
 @end
-
-
-
-
-
-
-
-
 
 #pragma mark - YContactBrithdayObject
 @implementation RITLContactBrithdayObject
 
-
-
 @end
-
-
-
-
-
-
-
 
 #pragma mark - YContactInstantMessageObject
 @implementation RITLContactInstantMessageObject
 
-
-
 @end
-
-
-
-
 
 #pragma mark - YContactRelatedNamesObject
 @implementation RITLContactRelatedNamesObject
 
-
-
 @end
-
-
-
-
-
 
 #pragma mark - YContactSocialProfileObject
 @implementation RITLContactSocialProfileObject
 
-
-
 @end
 
+#pragma mark - RITLContactSortManager
+@implementation RITLContactSortManager
+
+
+
++(NSArray<NSArray<RITLContactObject *> *> *)defaultHandleContactObject:(NSArray<RITLContactObject *> *)contactObjects
+{
+    return [self handleContactObjects:contactObjects groupingByKeyPath:@"__sortName" sortInGroupKeyPath:@"nameObject.name"];
+}
+
+
+
++(NSArray<NSArray<RITLContactObject *> *> *)handleContactObjects:(NSArray<RITLContactObject *> *)contactObjects groupingByKeyPath:(NSString *)keyPath sortInGroupKeyPath:(NSString *)sortInGroupkeyPath
+{
+    
+    UILocalizedIndexedCollation * localizedCollation = [UILocalizedIndexedCollation currentCollation];
+    
+    //初始化数组返回的数组
+    NSMutableArray <NSMutableArray *> * contacts = [NSMutableArray arrayWithCapacity:0];
+    
+    
+    /**(注:)
+     * 为什么不直接用27，而用count呢，这里取决于初始化方式
+     * 初始化方式为[[Class alloc] init],那么这个count = 0
+     * 初始化方式为[Class currentCollation],那么这个count = 27
+     */
+    
+    /**** 根据UILocalizedIndexedCollation的27个Title放入27个存储数据的数组 ****/
+    for (NSInteger i = 0; i < localizedCollation.sectionTitles.count; i++)
+    {
+        [contacts addObject:[NSMutableArray arrayWithCapacity:0]];
+    }
+    
+    
+    //开始遍历联系人对象，进行分组
+    for (RITLContactObject * contactObject in contactObjects)
+    {
+        //获取名字在UILocalizedIndexedCollation标头的索引数
+        NSInteger section = [localizedCollation sectionForObject:contactObject.nameObject collationStringSelector:NSSelectorFromString(keyPath)];
+        
+        //根据索引在相应的数组上添加数据
+        [contacts[section] addObject:contactObject];
+    }
+    
+    
+    //对每个同组的联系人进行排序
+    for (NSInteger i = 0; i < localizedCollation.sectionTitles.count; i++)
+    {
+        //获取需要排序的数组
+        NSMutableArray * tempMutableArray = contacts[i];
+        
+        //如果是直接的属性，直接用该方法排序即可，因为楼主自己构建的Model,name是Model的二级属性，所以此方法不能用
+        //NSArray * sortArray = [self.localizedCollation sortedArrayFromArray:tempMutableArray collationStringSelector:@selector(name)];
+        
+        
+        //这里因为需要通过nameObject的name进行排序，排序器排序(排序方法有好几种，楼主选择的排序器排序)
+        NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:sortInGroupkeyPath ascending:true];
+        [tempMutableArray sortUsingDescriptors:@[sortDescriptor]];
+        contacts[i] = tempMutableArray;
+        
+    }
+    
+    //返回
+    return [NSArray arrayWithArray:contacts];
+
+}
+
+@end

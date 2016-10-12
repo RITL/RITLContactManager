@@ -45,6 +45,9 @@ static NSString * currentContactKey = @"currentContact";
     //初始化一个YContactObject对象
     RITLContactObject * contactObject = [[RITLContactObject alloc]init];
     
+    //identifier
+    contactObject.identifier = contact.identifier;
+    
     //姓名对象OK
     contactObject.nameObject = [self __contactNameProperty];
     
@@ -57,7 +60,7 @@ static NSString * currentContactKey = @"currentContact";
     //电话对象OK
     contactObject.phoneObject = [self __contactPhoneProperty];
     
-    //工作对象
+    //工作对象OK
     contactObject.jobObject = [self __contactJobProperty];
     
     //邮件对象OK
@@ -69,23 +72,25 @@ static NSString * currentContactKey = @"currentContact";
     //生日对象
     contactObject.brithdayObject = [self __contactBrithdayProperty];
     
-    //即时通信对象
+    //即时通信对象OK
     contactObject.instantMessage = [self __contactMessageProperty];
     
-    //关联对象
+    //关联对象OK
     contactObject.relatedNames = [self __contactRelatedNamesProperty];
     
-    //社交简介
+    //社交简介OK
     contactObject.socialProfiles = [self __contactSocialProfilesProperty];
     
     //备注OK
     contactObject.note = [self __contactNoteProperty];
+    
     
     //创建时间
 //    contactObject.creationDate = [self __contactDateProperty:kABPersonCreationDateProperty];              //创建日期
     
     //最近一次修改的时间
 //    contactObject.modificationDate = [self __contactDateProperty:kABPersonModificationDateProperty];      //最近一次修改的时间
+
     
     return contactObject;
 }
@@ -118,7 +123,14 @@ static NSString * currentContactKey = @"currentContact";
 {
     RITLContactJobObject * jobObject = [[ RITLContactJobObject alloc]init];
     
-    
+    if ([self.currentContact isKeyAvailable:CNContactJobTitleKey])
+    {
+        //setValue
+        jobObject.jobTitle = self.currentContact.jobTitle;
+        jobObject.departmentName = self.currentContact.departmentName;
+        jobObject.organizationName = self.currentContact.organizationName;
+    }
+
     return jobObject;
 }
 
@@ -254,8 +266,23 @@ static NSString * currentContactKey = @"currentContact";
     //实例化对象
     RITLContactBrithdayObject * brithdayObject = [[RITLContactBrithdayObject alloc]init];
     
-
     
+    if ([self.currentContact isKeyAvailable:CNContactBirthdayKey])
+    {
+        //set value
+        brithdayObject.brithdayDate = [self.currentContact.birthday.calendar dateFromComponents:self.currentContact.birthday];
+        brithdayObject.leapMonth = self.currentContact.birthday.isLeapMonth;
+    }
+
+    if ([self.currentContact isKeyAvailable:CNContactNonGregorianBirthdayKey])
+    {
+        brithdayObject.calendar = self.currentContact.nonGregorianBirthday.calendar.calendarIdentifier;
+        brithdayObject.era = self.currentContact.nonGregorianBirthday.era;
+        brithdayObject.day = self.currentContact.nonGregorianBirthday.day;
+        brithdayObject.month = self.currentContact.nonGregorianBirthday.month;
+        brithdayObject.year = self.currentContact.nonGregorianBirthday.year;
+    }
+
     //返回对象
     return brithdayObject;
 }
@@ -294,10 +321,27 @@ static NSString * currentContactKey = @"currentContact";
  */
 + (NSArray <RITLContactInstantMessageObject *> *)__contactMessageProperty
 {
-    //存放数组
-    NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:0];
+    if (![self.currentContact isKeyAvailable:CNContactInstantMessageAddressesKey])
+    {
+        return @[];
+    }
     
-
+    //存放数组
+    NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:self.currentContact.instantMessageAddresses.count];
+    
+    for (CNLabeledValue * instanceAddressValue in self.currentContact.instantMessageAddresses)
+    {
+        RITLContactInstantMessageObject * instaceObject = [[RITLContactInstantMessageObject alloc]init];
+        
+        //set value
+        instaceObject.identifier = instanceAddressValue.identifier;
+        instaceObject.service = ((CNInstantMessageAddress *)instanceAddressValue.value).service;
+        instaceObject.userName = ((CNInstantMessageAddress *)instanceAddressValue.value).username;
+        
+        //add
+        [instantMessages addObject:instaceObject];
+    }
+    
     return [NSArray arrayWithArray:instantMessages];
 }
 
@@ -308,9 +352,26 @@ static NSString * currentContactKey = @"currentContact";
  */
 + (NSArray <RITLContactRelatedNamesObject *> *)__contactRelatedNamesProperty
 {
-    //存放数组
-    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:0];
+    if (![self.currentContact isKeyAvailable:CNContactRelationsKey])
+    {
+        return @[];
+    }
     
+    //存放数组
+    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:self.currentContact.contactRelations.count];
+    
+    for (CNLabeledValue * relationsValue in self.currentContact.contactRelations)
+    {
+        RITLContactRelatedNamesObject * relatedObject = [[RITLContactRelatedNamesObject alloc]init];
+        
+        //set value
+        relatedObject.identifier = relationsValue.identifier;
+        relatedObject.relatedTitle = relationsValue.label;
+        relatedObject.relatedName = ((CNContactRelation *)relationsValue.value).name;
+        
+        [relatedNames addObject:relatedObject];
+        
+    }
 
     
     return [NSArray arrayWithArray:relatedNames];
@@ -323,10 +384,30 @@ static NSString * currentContactKey = @"currentContact";
  */
 + (NSArray <RITLContactSocialProfileObject *> *)__contactSocialProfilesProperty
 {
-    //外传数组
-    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:0];
+    if (![self.currentContact isKeyAvailable:CNContactSocialProfilesKey])
+    {
+        return @[];
+    }
     
+    //外传数组
+    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:self.currentContact.socialProfiles.count];
+    
+    for (CNLabeledValue * socialProfileValue in self.currentContact.socialProfiles) {
+        
+        RITLContactSocialProfileObject * socialProfileObject = [[RITLContactSocialProfileObject alloc]init];
+        
+        //获得CNSocialProfile对象
+        CNSocialProfile * socialProfile = socialProfileValue.value;
 
+        //set value
+        socialProfileObject.identifier = socialProfileValue.identifier;
+        socialProfileObject.socialProfileTitle = socialProfile.service;
+        socialProfileObject.socialProFileAccount = socialProfile.username;
+        socialProfileObject.socialProFileUrl = socialProfile.urlString;
+        
+        [socialProfiles addObject:socialProfileObject];
+    }
+    
     return [NSArray arrayWithArray:socialProfiles];
 }
 

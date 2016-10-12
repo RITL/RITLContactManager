@@ -22,7 +22,6 @@
 
 @implementation RITLContactObject (RITLContactFile)
 
-@dynamic identifier;
 
 -(void)contactObject:(CNContact *)contact
 {
@@ -48,24 +47,12 @@
     self.phoneticGivenName = contact.phoneticGivenName;
     self.phoneticFamilyName = contact.phoneticFamilyName;
     self.phoneticMiddleName = contact.phoneticMiddleName;
+    
+#ifdef __IPHONE_10_0
+    self.phoneticOrganizationName = contact.phoneticOrganizationName;
+#endif
 }
 
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *identifier;
-//
-//@property (readonly, NS_NONATOMIC_IOSONLY) CNContactType contactType;
-//
-//
-//
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *organizationName;
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *departmentName;
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *jobTitle;
-//
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *phoneticGivenName;
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *phoneticMiddleName;
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *phoneticFamilyName;
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *phoneticOrganizationName NS_AVAILABLE(10_12, 10_0);
-//
-//@property (readonly, copy, NS_NONATOMIC_IOSONLY) NSString *note;
 
 @end
 
@@ -74,15 +61,6 @@ static NSString * formattedAddressKey;
 
 @implementation RITLContactAddressObject (RITLContactFile)
 
--(NSString *)formattedAddress
-{
-    return objc_getAssociatedObject(self, &formattedAddressKey);
-}
-
--(void)RITLSetFormattedAddress:(NSString *)formattedAddress
-{
-    objc_setAssociatedObject(self, &formattedAddressKey, formattedAddress, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
 
 -(void)contactObject:(CNPostalAddress *)cnAddressObject
 {
@@ -94,7 +72,13 @@ static NSString * formattedAddressKey;
     self.ISOCountryCode = cnAddressObject.ISOCountryCode;
     
     //set
-    [self RITLSetFormattedAddress:[CNPostalAddressFormatter stringFromPostalAddress:cnAddressObject style:CNPostalAddressFormatterStyleMailingAddress]];
+    self.formattedAddress = [CNPostalAddressFormatter stringFromPostalAddress:cnAddressObject style:CNPostalAddressFormatterStyleMailingAddress];
 }
+
+-(void)dealloc
+{
+    
+}
+
 
 @end

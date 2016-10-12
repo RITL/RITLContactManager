@@ -23,9 +23,6 @@ static NSString * const reuseIdentifier = @"RightCell";
 //存放索引的数组，(e.g. A-Z,# in US/English)
 @property (nonatomic, copy)NSArray <NSString *> * titles;
 
-//负责进行联系人分组的原生类
-@property (nonatomic, strong)UILocalizedIndexedCollation * localizedCollation;
-
 //存放处理过的数组
 @property (nonatomic, copy)NSArray <NSArray *> * handleContactObjects;
 
@@ -43,10 +40,6 @@ static NSString * const reuseIdentifier = @"RightCell";
     //初始化属性
     self.contactManager = [RITLContactsManager sharedInstance];
     self.titles = [NSMutableArray arrayWithCapacity:0];
-    self.localizedCollation = [UILocalizedIndexedCollation currentCollation];
-    
-    UILocalizedIndexedCollation * c = [[UILocalizedIndexedCollation alloc]init];
-    NSLog(@"%@",@(c.sectionTitles.count));
     
     //开始请求
     [self requestContacts];
@@ -64,7 +57,7 @@ static NSString * const reuseIdentifier = @"RightCell";
         
         //开始赋值
         copy_self.contactObjects = contacts;
-        copy_self.titles = copy_self.localizedCollation.sectionTitles;
+        copy_self.titles = [UILocalizedIndexedCollation currentCollation].sectionTitles;
         
         //刷新
         [copy_self.tableView reloadData];
@@ -164,53 +157,7 @@ static NSString * const reuseIdentifier = @"RightCell";
 #pragma mark - localizedCollation Setter
 -(NSArray<NSArray *> *)handleContactObjects
 {
-    //初始化数组返回的数组
-    NSMutableArray <NSMutableArray *> * contacts = [NSMutableArray arrayWithCapacity:0];
-    
-    
-    /**(注:)
-     * 为什么不直接用27，而用count呢，这里取决于初始化方式
-     * 初始化方式为[[Class alloc] init],那么这个count = 0
-     * 初始化方式为[Class currentCollation],那么这个count = 27
-     */
-    
-    /**** 根据UILocalizedIndexedCollation的27个Title放入27个存储数据的数组 ****/
-    for (NSInteger i = 0; i < self.localizedCollation.sectionTitles.count; i++)
-    {
-        [contacts addObject:[NSMutableArray arrayWithCapacity:0]];
-    }
-    
-    
-    //开始遍历联系人对象，进行分组
-    for (RITLContactObject * contactObject in self.contactObjects)
-    {
-        //获取名字在UILocalizedIndexedCollation标头的索引数
-        NSInteger section = [self.localizedCollation sectionForObject:contactObject.nameObject collationStringSelector:@selector(name)];
-        
-        //根据索引在相应的数组上添加数据
-        [contacts[section] addObject:contactObject];
-    }
-    
-    
-    //对每个同组的联系人进行排序
-    for (NSInteger i = 0; i < self.localizedCollation.sectionTitles.count; i++)
-    {
-        //获取需要排序的数组
-        NSMutableArray * tempMutableArray = contacts[i];
-        
-        //如果是直接的属性，直接用该方法排序即可，因为楼主自己构建的Model,name是Model的二级属性，所以此方法不能用
-        //NSArray * sortArray = [self.localizedCollation sortedArrayFromArray:tempMutableArray collationStringSelector:@selector(name)];
-        
-        
-        //这里因为需要通过nameObject的name进行排序，排序器排序(排序方法有好几种，楼主选择的排序器排序)
-        NSSortDescriptor * sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"nameObject.name" ascending:true];
-        [tempMutableArray sortUsingDescriptors:@[sortDescriptor]];
-        contacts[i] = tempMutableArray;
-        
-    }
-    
-    //返回
-    return [NSArray arrayWithArray:contacts];
+    return [RITLContactSortManager defaultHandleContactObject:self.contactObjects];
 }
 
 

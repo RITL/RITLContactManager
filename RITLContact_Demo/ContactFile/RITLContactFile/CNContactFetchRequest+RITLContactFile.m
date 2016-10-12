@@ -7,6 +7,7 @@
 //
 
 #import "CNContactFetchRequest+RITLContactFile.h"
+#import "NSString+RITLContactFile.h"
 
 
 @implementation CNContactFetchRequest (RITLContactFile)
@@ -22,11 +23,60 @@
 
 +(NSArray <id<CNKeyDescriptor>> *)__allKeys
 {
-//    NSLog(@"contact = %@",[CNContact descriptorForAllComparatorKeys]);
-    
-    return @[[CNContact descriptorForAllComparatorKeys],CNContactPhoneNumbersKey,CNContactEmailAddressesKey,CNContactPostalAddressesKey,CNContactJobTitleKey,CNContactDepartmentNameKey,CNContactDepartmentNameKey,CNContactNoteKey];
-    
-//    return @[[CNContact descriptorForAllComparatorKeys]];
+    return @[
+#ifdef __IPHONE_10_0
+            CNContactPhoneticOrganizationNameKey,
+#endif
+            //name
+            CNContactNamePrefixKey,
+            CNContactGivenNameKey,
+            CNContactMiddleNameKey,
+            CNContactFamilyNameKey,
+            CNContactPreviousFamilyNameKey,
+            CNContactNameSuffixKey,
+            CNContactNicknameKey,
+            
+            //phonetic
+            CNContactPhoneticGivenNameKey,
+            CNContactPhoneticMiddleNameKey,
+            CNContactPhoneticFamilyNameKey,
+            
+            //number
+            CNContactPhoneNumbersKey,
+            
+            //email
+            CNContactEmailAddressesKey,
+            
+            //postal
+            CNContactPostalAddressesKey,
+            
+            //job
+            CNContactJobTitleKey,
+            CNContactDepartmentNameKey,
+            CNContactOrganizationNameKey,
+            
+            //note
+            CNContactNoteKey,
+            
+            //type
+            CNContactTypeKey,
+            
+            //birthday
+            CNContactBirthdayKey,
+            CNContactNonGregorianBirthdayKey,
+            
+            //instantMessageAddresses
+            CNContactInstantMessageAddressesKey,
+            
+            //relation
+            CNContactRelationsKey,
+            
+            //SocialProfiles
+            CNContactSocialProfilesKey,
+            
+            //Dates
+            CNContactDatesKey
+            ];
 }
 
 @end

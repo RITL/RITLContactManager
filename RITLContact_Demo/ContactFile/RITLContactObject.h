@@ -38,6 +38,10 @@ typedef NS_ENUM(NSUInteger,RITLContactType)
  */
 NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
+ 对象的标志位
+ */
+@property (nonatomic, copy) NSString * identifier NS_AVAILABLE_IOS(9_0);
+/**
  *  联系人的姓名对象
  */
 @property (nonatomic, strong)RITLContactNameObject * nameObject;
@@ -72,11 +76,11 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 /**
  *  创建日期
  */
-@property (nonatomic, strong) NSDate * creationDate;
+@property (nonatomic, strong) NSDate * creationDate NS_DEPRECATED_IOS(7_0, 9_0);
 /**
  *  最近一次修改的时间
  */
-@property (nonatomic, strong) NSDate * modificationDate;
+@property (nonatomic, strong) NSDate * modificationDate NS_DEPRECATED_IOS(7_0, 9_0);
 /**
  *  联系人的地址对象
  */
@@ -138,18 +142,24 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactNameObject : NSObject
  *  名字的后缀
  */
 @property (nonatomic, copy) NSString * nameSuffix;
+
+#pragma 以下属性是语音属性
 /**
- *  名字的拼音音标
+ *  名字的拼音或音标
  */
 @property (nonatomic, copy) NSString * phoneticGivenName;
 /**
- *  姓氏的拼音音标
+ *  姓氏的拼音或音标
  */
 @property (nonatomic, copy) NSString * phoneticFamilyName;
 /**
- *  英文名字中间存的信仰缩写字母的拼音音标
+ *  中间名的拼音或音标
  */
 @property (nonatomic, copy) NSString * phoneticMiddleName;
+/**
+ 公司名字拼音
+ */
+@property (nonatomic, copy) NSString * phoneticOrganizationName NS_AVAILABLE_IOS(10_0);
 
 @end
 
@@ -276,6 +286,10 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactAddressObject : NSObject
  *  ISO国家编号
  */
 @property (nonatomic, copy)NSString * ISOCountryCode;
+/**
+ 地址的描述字符串，eg 中国 山东 潍坊 XX 261800
+ */
+@property (nonatomic, copy)NSString * formattedAddress NS_AVAILABLE_IOS(9_0);
 
 @end
 
@@ -340,6 +354,11 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactBrithdayObject : NSObject
  *  联系人的即时通信对象
  */
 NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactInstantMessageObject : NSObject
+
+/**
+ 标识符
+ */
+@property (nonatomic, copy, nullable)NSString * identifier NS_AVAILABLE_IOS(9_0);
 /**
  *  服务名称(如QQ)
  */
@@ -366,6 +385,10 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactInstantMessageObject : NSObjec
 NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactRelatedNamesObject : NSObject
 
 /**
+ 标志符
+ */
+@property (nonatomic, copy)NSString * identifier NS_AVAILABLE_IOS(9_0);
+/**
  *  关联的标签(如friend)
  */
 @property (nonatomic, copy)NSString * relatedTitle;
@@ -385,6 +408,11 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactRelatedNamesObject : NSObject
  *  联系人的社交简介对象
  */
 NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactSocialProfileObject : NSObject
+
+/**
+ 标识符
+ */
+@property (nonatomic, copy)NSString * identifier NS_AVAILABLE_IOS(9_0);
 /**
  *  社交简介(如sinaweibo)
  */
@@ -399,5 +427,42 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactSocialProfileObject : NSObject
 @property (nonatomic, copy)NSString * socialProFileUrl;
 
 @end
+
+
+
+
+/**
+ 将联系人分组排序的类
+ */
+@interface RITLContactSortManager : NSObject
+
+
+/**
+ 按照默认的keyPath分成A~#的数组
+
+ @param contactObjects 存放RITLContactObject对象的数组
+
+ @return 处理完毕数组
+ */
++(NSArray<NSArray <RITLContactObject * > *> *)defaultHandleContactObject:(NSArray <RITLContactObject *> *)contactObjects;
+
+
+
+
+/**
+ 将存放RITLContactObject对象的数组按照keyPath分成A~#的数组
+
+ @param contactObjects     存放RITLContactObject对象的数组
+ @param keyPath            分组的依据
+ @param sortInGroupkeyPath 组内排序依据
+
+ @return 处理完毕的数组
+ */
++(NSArray<NSArray <RITLContactObject * > *> *)handleContactObjects:(NSArray <RITLContactObject *> *)contactObjects
+                                                 groupingByKeyPath:(NSString *)keyPath
+                                                sortInGroupKeyPath:(NSString *)sortInGroupkeyPath;
+
+@end
+
 
 NS_ASSUME_NONNULL_END
