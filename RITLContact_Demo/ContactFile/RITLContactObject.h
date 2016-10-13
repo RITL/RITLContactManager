@@ -46,6 +46,10 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
  */
 @property (nonatomic, strong)RITLContactNameObject * nameObject;
 /**
+ 是否存在多个电话
+ */
+@property (nonatomic, assign, readonly) BOOL hasMulitPhone;
+/**
  *  联系人的电话对象
  */
 @property (nonatomic, copy)NSArray <RITLContactPhoneObject *> * phoneObject;

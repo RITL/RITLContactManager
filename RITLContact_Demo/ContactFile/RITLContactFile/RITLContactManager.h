@@ -19,6 +19,22 @@ NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactManager : NSObject
 
 
 /**
+ 发生变化的回调,返回更新后的数组
+ */
+@property (nonatomic, copy)void(^contactDidChange)(NSArray<RITLContactObject *>*);
+
+
+/**
+ 便利初始化方法
+
+ @param contactDidChange 发生变化进行的回调
+
+ @return RITLContactManager初始化完毕的RITLContactManager对象
+ */
+-(instancetype)initContactDidChange:(void(^)(NSArray<RITLContactObject *>*)) contactDidChange;
+
+
+/**
  请求所有的联系人,按照添加人的时间顺序
  
  @param completeBlock 获取到数据完成的回调

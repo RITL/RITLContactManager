@@ -10,7 +10,7 @@
 #import "RITLContactsManager.h"
 #import "RITLContacts.h"
 
-#ifdef __IPHONE_9_0
+#ifdef ContactFrameworkIsAvailable
 #import "RITLContactManager.h"
 #else
 #import "RITLAddressBookContactManager.h"
@@ -20,11 +20,11 @@
 
 @interface RITLContactsManager ()
 
-#ifndef __IPHONE_9_0
+#ifndef ContactFrameworkIsAvailable
 /**
  负责针对AddressBook进行数据请求的类
  */
-@property (nonatomic, strong) RITLAddressBookContactManager * addressBokkContactManager;
+@property (nonatomic, strong) RITLAddressBookContactManager * addressBookContactManager;
 
 #else
 /**
@@ -45,10 +45,10 @@
 {
     if (self = [super init])
     {
-#ifndef __IPHONE_9_0
+#ifndef ContactFrameworkIsAvailable
         if (!isAvailableContactFramework)
         {
-          self.addressBokkContactManager = [[RITLAddressBookContactManager alloc]init];
+          self.addressBookContactManager = [[RITLAddressBookContactManager alloc]init];
         }
 #else
         self.contactManager = [[RITLContactManager alloc]init];
@@ -60,49 +60,6 @@
 }
 
 
-//void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef info, void *context)
-//{
-//    //coding when addressBook did changed
-//    NSLog(@"通讯录发生变化啦");
-//    
-//    //初始化对象
-//    RITLContactsManager * contactManager = CFBridgingRelease(context);
-//    
-//    //重新获取联系人
-//    [contactManager obtainContacts:addressBook];
-//    
-//}
-//
-//
-
-
-
-+(instancetype)sharedInstance
-{
-    static RITLContactsManager * addressBookManager = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        
-        addressBookManager = [[RITLContactsManager alloc]init];
-        
-    });
-    
-    return addressBookManager;
-}
-
-
-//-(void)dealloc
-//{
-//    
-//    //移除监听
-//    ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
-//    
-//    //释放
-//    CFRelease(self.addressBook);
-//}
-
-
 
 
 
@@ -111,12 +68,19 @@
 //请求通讯录
 -(void)requestContactsComplete:(void (^)(NSArray<RITLContactObject *> * _Nonnull))completeBlock defendBlock:(nonnull void (^)(void))defendBlock
 {
-#ifndef __IPHONE_9_0
+    [self requestContactsType:ContactsTypeDefault Complete:completeBlock defendBlock:defendBlock];
+}
+
+
+-(void)requestContactsType:(ContactsType)contactType Complete:(void (^)(NSArray<RITLContactObject *> * _Nonnull))completeBlock defendBlock:(void (^)(void))defendBlock
+{
+
+#ifndef ContactFrameworkIsAvailable
     
     if (!isAvailableContactFramework)
     {
         //如果是addressBook
-        [self.addressBokkContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
+        [self.addressBookContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
             
             completeBlock(contacts);
             
@@ -125,8 +89,12 @@
             defendBlock();
             
         }];
+        
+        //change Block
+        self.addressBookContactManager.addressBookDidChange = [completeBlock copy];
+        
     }
-
+    
 #else
     
     //如果是contact
@@ -139,6 +107,8 @@
         defendBlock();
         
     }];
+    
+    self.contactManager.contactDidChange = [completeBlock copy];
     
 #endif
 }

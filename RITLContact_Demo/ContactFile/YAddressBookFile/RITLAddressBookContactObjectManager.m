@@ -162,11 +162,11 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactEmailObject *> *)__contactEmailProperty
 {
-    //外传数组
-    NSMutableArray <RITLContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:0];
-    
     //获取多值属性
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonEmailProperty);
+    
+    //外传数组
+    NSMutableArray <RITLContactEmailObject *> * emails = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(values)];
     
     //遍历添加
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
@@ -194,11 +194,11 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactAddressObject *> *)__contactAddressProperty
 {
-    //外传数组
-    NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:0];
-    
     //获取多指属性
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonAddressProperty);
+    
+    //外传数组
+    NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(values)];
     
     //遍历添加
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
@@ -239,12 +239,13 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactPhoneObject *> *)__contactPhoneProperty
 {
-    //外传数组
-    NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:0];
-    
     //获得电话号码的多值对象
     ABMultiValueRef values = ABRecordCopyValue(self.recordRef, kABPersonPhoneProperty);
     
+    //外传数组
+    NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(values)];
+    
+
     for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
     {
         RITLContactPhoneObject * phoneObject = [[RITLContactPhoneObject alloc]init];
@@ -353,11 +354,11 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactInstantMessageObject *> *)__contactMessageProperty
 {
-    //存放数组
-    NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:0];
-    
     //获取数据字典
     ABMultiValueRef messages = ABRecordCopyValue(self.recordRef, kABPersonInstantMessageProperty);
+    
+    //存放数组
+    NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(messages)];
     
     //遍历获取值
     for (NSInteger i = 0; i < ABMultiValueGetCount(messages); i++)
@@ -385,11 +386,11 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactRelatedNamesObject *> *)__contactRelatedNamesProperty
 {
-    //存放数组
-    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:0];
-    
     //获得多值属性
     ABMultiValueRef names = ABRecordCopyValue(self.recordRef, kABPersonRelatedNamesProperty);
+    
+    //存放数组
+    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(names)];
     
     //遍历赋值
     for (NSInteger i = 0; i < ABMultiValueGetCount(names); i++)
@@ -415,11 +416,11 @@ static NSString * const RITLAddressBookContactsManager;
  */
 + (NSArray <RITLContactSocialProfileObject *> *)__contactSocialProfilesProperty
 {
-    //外传数组
-    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:0];
-    
     //获得多值属性
     ABMultiValueRef profiles = ABRecordCopyValue(self.recordRef, kABPersonSocialProfileProperty);
+    
+    //外传数组
+    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(profiles)];
     
     //遍历取值
     for (NSInteger i = 0; i < ABMultiValueGetCount(profiles); i++)

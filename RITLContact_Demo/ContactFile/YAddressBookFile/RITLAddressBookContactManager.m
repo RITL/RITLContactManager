@@ -35,6 +35,9 @@
     {
         //初始化addressBook
         self.addressBook = ABAddressBookCreate();
+        
+        //注册监听
+        ABAddressBookRegisterExternalChangeCallback(self.addressBook,addressBookChangeCallBack,(__bridge_retained void *)(self));
     }
     
     return self;
@@ -42,9 +45,27 @@
 
 
 
+void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef info, void *context)
+{
+    //coding when addressBook did changed
+    NSLog(@"通讯录发生变化啦");
+
+    //初始化对象
+    RITLAddressBookContactManager * contactManager = CFBridgingRelease(context);
+
+    //重新获取联系人
+    [contactManager __obtainContacts:addressBook completeBlock:contactManager.addressBookDidChange];
+    
+    //获得修改的联系人数组
+    /*no implementation....*/
+}
+
 
 -(void)dealloc
 {
+    //移除监听
+    ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
+
     CFRelease(self.addressBook);
 }
 
@@ -76,7 +97,7 @@
             //存在权限
         case kABAuthorizationStatusAuthorized:
             //获取通讯录
-            [self __obtainContacts:self.addressBook];
+            [self __obtainContacts:self.addressBook completeBlock:self.completeBlock];
             break;
             
             //权限未知
@@ -95,7 +116,7 @@
 /**
  *  获取通讯录中的联系人
  */
-- (void)__obtainContacts:(ABAddressBookRef)addressBook
+- (void)__obtainContacts:(ABAddressBookRef)addressBook completeBlock:(void(^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
 {
     
     //按照添加时间请求所有的联系人
@@ -119,13 +140,24 @@
         
         //添加对象
         [contacts addObject:contactObject];
+        
+        CFRelease(recordRef);
+        
     }
     
     //释放资源
     CFRelease(allContacts);
     
-    //进行数据回调
-    self.completeBlock([NSArray arrayWithArray:contacts]);
+    //主线程回调
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if (completeBlock != nil)
+        {
+            //进行数据回调
+            completeBlock([NSArray arrayWithArray:contacts]);
+        }
+    });
+
 }
 
 
@@ -146,7 +178,7 @@
             //权限得到允许
             if (granted == true)
             {
-                [copy_self __obtainContacts:copy_self.addressBook];
+                [copy_self __obtainContacts:copy_self.addressBook completeBlock:self.completeBlock];
             }
             
             else

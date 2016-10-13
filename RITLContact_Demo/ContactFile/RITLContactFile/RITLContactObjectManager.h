@@ -21,6 +21,8 @@ NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactObjectManager : NSObject
 
 
 
+
+
 /**
  根据CNContact对象获得RITLContactObject对象
 

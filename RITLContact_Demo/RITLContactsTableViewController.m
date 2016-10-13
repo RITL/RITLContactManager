@@ -38,7 +38,7 @@ static NSString * const reuseIdentifier = @"RightCell";
     [super viewDidLoad];
     
     //初始化属性
-    self.contactManager = [RITLContactsManager sharedInstance];
+    self.contactManager = [[RITLContactsManager alloc]init];
     self.titles = [NSMutableArray arrayWithCapacity:0];
     
     //开始请求

@@ -19,6 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactManager instead") @interface RITLAddressBookContactManager : NSObject
 
 
+/**
+ 发生变化的回调,返回更新后的数组
+ */
+@property (nonatomic, copy)void(^addressBookDidChange)(NSArray<RITLContactObject *>*) NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactManager instead");
+
 
 /**
  请求所有的联系人,按照添加人的时间顺序

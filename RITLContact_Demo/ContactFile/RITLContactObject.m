@@ -72,7 +72,15 @@ NSArray<NSString *> * propertyNames(id object)
 //    return object;
 //}
 
-
+-(BOOL)hasMulitPhone
+{
+    if (_phoneObject.count >= 1)
+    {
+        return true;
+    }
+    
+    return false;
+}
 
 
 +(BOOL)resolveInstanceMethod:(SEL)sel

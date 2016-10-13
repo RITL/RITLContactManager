@@ -15,11 +15,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSString (RITLContactFile)
 
 /**
- 获得联系人所有描述键的便利方法
+ 获得联系人所有描述姓名键的便利方法
 
- @return 存放姓名描述建的便利方法
+ @return 存放姓名描述姓名键的便利方法
  */
 + (NSArray <id <CNKeyDescriptor>> *)RITLContactNameKeys;
+
+
+
+/**
+ 获得所有联系人的所有键的便利方法
+
+ @return 存放所有联系人所有键的便利方法
+ */
++ (NSArray <id<CNKeyDescriptor>> *)RITLContactAllKeys;
 
 @end
 

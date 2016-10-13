@@ -28,6 +28,18 @@
     [super contactObject:contact];
 }
 
+-(NSArray<NSString *> *)phones
+{
+    NSMutableArray <NSString *> * mulitPhones = [NSMutableArray arrayWithCapacity:self.phoneObject.count];
+    
+    for (RITLContactPhoneObject * phoneObject in self.phoneObject)
+    {
+        [mulitPhones addObject:phoneObject.phoneNumber];
+    }
+    
+    return [mulitPhones copy];
+}
+
 @end
 
 

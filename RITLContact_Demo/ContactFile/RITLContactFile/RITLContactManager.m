@@ -11,11 +11,18 @@
 #import "CNContactFetchRequest+RITLContactFile.h"
 #import "RITLContactObjectManager.h"
 #import "RITLContactObject+RITLContactFile.h"
+#import "RITLContactCatcheManager.h"
+#import "NSString+RITLContactFile.h"
+#import "RITLContactCatcheManager.h"
+
 
 @import Contacts;
 
 
 @interface RITLContactManager ()
+
+/// 表示是否已经做监听
+@property (nonatomic, assign) BOOL notificationDidAdd;
 
 /// 请求通讯录数据的对象
 @property (nonatomic, strong) CNContactStore * contactStore;
@@ -38,9 +45,28 @@
     {
         //初始化CNContactStore
         self.contactStore = [CNContactStore new];
+
     }
     
     return self;
+}
+
+
+
+-(instancetype)initContactDidChange:(void (^)(NSArray<RITLContactObject *> * _Nonnull))contactDidChange
+{
+    if (self = [self init])
+    {
+        self.contactDidChange = contactDidChange;
+    }
+    
+    return self;
+}
+
+
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 
 #pragma mark - public function
@@ -66,7 +92,7 @@
             //存在权限
         case CNAuthorizationStatusAuthorized:
             //获取通讯录
-            [self __obtainContacts];
+            [self __obtainContacts:self.completeBlock];
             break;
             
             //权限未知
@@ -85,22 +111,29 @@
 /**
  *  获取通讯录中的联系人
  */
-- (void)__obtainContacts
+- (void)__obtainContacts:(void (^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
 {
-    NSMutableArray <RITLContactObject *> * contacts = [NSMutableArray arrayWithCapacity:0];
+    if (self.notificationDidAdd == false)
+    {
+        //添加通知
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(__contactDidChange:) name:CNContactStoreDidChangeNotification object:nil];
+        self.notificationDidAdd = !self.notificationDidAdd;
+    }
     
-    //获取联系人
-    [self.contactStore enumerateContactsWithFetchRequest:[CNContactFetchRequest descriptorForAllKeys] error:nil usingBlock:^(CNContact * _Nonnull contact, BOOL * _Nonnull stop) {
-       
-        //进行对象的处理
-        RITLContactObject * contactObject = [RITLContactObjectManager contantObject:contact];
+    __weak typeof(self) weakSelf = self;
     
-        [contacts addObject:contactObject];
+    //进行缓存
+    [[RITLContactCatcheManager sharedInstace]startRequestIndentifiers:^(NSArray<NSString *> * _Nonnull identifiers) {
+
+        NSArray * contacts = [weakSelf __contactHandleWithIdentifiers:identifiers];
         
+        //主线程回调
+        dispatch_async(dispatch_get_main_queue(), ^{
+           
+            completeBlock([contacts mutableCopy]);
+            
+        });
     }];
-    
-    //block
-    self.completeBlock([contacts mutableCopy]);
 }
 
 
@@ -122,7 +155,7 @@
             //主线程调用
             if (granted == true)
             {
-                [weakSelf __obtainContacts];
+                [weakSelf __obtainContacts:weakSelf.completeBlock];
             }
             
             else
@@ -131,6 +164,57 @@
             }
         });
     }];
+}
+
+
+
+/**
+ 通讯录发生变化进行的回调
+
+ @param notication 发送的通知
+ */
+- (void)__contactDidChange:(NSNotification *)notication
+{
+    //重新获取通讯录
+    if (self.contactDidChange != nil )
+    {
+        //重新加载缓存
+        [[RITLContactCatcheManager sharedInstace]reloadContactIdentifiers:^(NSArray<NSString *> * _Nonnull identifiers) {
+            
+            NSArray * contacts = [self __contactHandleWithIdentifiers:identifiers];
+            
+            //回调
+            self.contactDidChange([contacts mutableCopy]);
+        }];
+    }
+    
+}
+
+
+
+
+/**
+ 将所有的identifiers转成RITLObject对象
+
+ @param identifiers 存放identifiers的数组
+
+ @return 初始化完毕的RITLContactObject数组
+ */
+- (NSArray <RITLContactObject *> *)__contactHandleWithIdentifiers:(NSArray <NSString *> *)identifiers
+{
+    NSMutableArray <RITLContactObject *> * contacts = [NSMutableArray arrayWithCapacity:0];
+    
+    for (NSString * identifier in identifiers)
+    {
+        CNContact * contact = [self.contactStore unifiedContactWithIdentifier:identifier keysToFetch:[NSString RITLContactAllKeys] error:nil];
+        
+        //进行对象的处理
+        RITLContactObject * contactObject = [RITLContactObjectManager contantObject:contact];
+        
+        [contacts addObject:contactObject];
+    }
+    
+    return [contacts mutableCopy];
 }
 
 

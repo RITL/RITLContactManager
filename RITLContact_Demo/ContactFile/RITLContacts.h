@@ -11,6 +11,11 @@
 
 
 #define isAvailableContactFramework ([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
+//#define isAvailableContactFramework (false)
+
+#ifdef __IPHONE_9_0
+    #define ContactFrameworkIsAvailable
+#endif
 
 
 #endif /* RITLContacts_h */

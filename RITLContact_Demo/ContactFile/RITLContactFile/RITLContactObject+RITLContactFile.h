@@ -21,6 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RITLContactObject (RITLContactFile)
 
+/**
+ 获得只存放电话号码的数组
+
+ @return 存放电话号码的数组
+ */
+- (NSArray <NSString *> *)phones;
 
 @end
 
