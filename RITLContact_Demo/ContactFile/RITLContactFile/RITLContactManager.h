@@ -11,12 +11,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class RITLContactObject;
+@protocol CNKeyDescriptor;
+
 
 /**
  针对Contacts.framework进行请求数据的类
  */
 NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactManager : NSObject
 
+
+/**
+ 想要获得的键值描述，详见NSString+RITLContactFile.m 或者 CNContact.h,默认为RITLContactAllKeys
+ */
+@property (nonatomic, copy)NSArray <id<CNKeyDescriptor>> * descriptors;
 
 /**
  发生变化的回调,返回更新后的数组

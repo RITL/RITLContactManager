@@ -10,6 +10,7 @@
 
 
 @class RITLContactObject;
+@protocol CNKeyDescriptor;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /**
- 请求联系人对象的方式
+ 请求联系人对象的方式,no implementation
  */
 typedef NS_ENUM(NSInteger,ContactsType)
 {
@@ -31,10 +32,23 @@ typedef NS_ENUM(NSInteger,ContactsType)
  */
 @interface RITLContactsManager : NSObject
 
+
+/**
+ 想要获得的键值描述，详见NSString+RITLContactFile.m 或者 CNContact.h,默认为RITLContactAllKeys
+ */
+@property (nonatomic, copy)NSArray <id<CNKeyDescriptor>> * descriptors NS_AVAILABLE_IOS(9_0);
+
+
+/**
+ 通讯录发生变化进行的回调，返回更新完毕的RITLContactObject对象数组
+ */
+@property (nonatomic, copy)void(^contactDidChange)(NSArray<RITLContactObject *>*);
+
+
 /**
  *  RITLContactsManager单例
  */
-//+(instancetype)sharedInstance;
++(instancetype)sharedInstance __deprecated_msg("singlecase is not implementation now,please use [[RITLContactsManager alloc] init]");
 
 
 /**

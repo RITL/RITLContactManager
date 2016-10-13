@@ -9,6 +9,7 @@
 #import "RITLContactsTableViewController.h"
 #import "RITLContactsManager.h"
 #import "RITLContactObject.h"
+#import "NSString+RITLContactFile.h"
 
 
 
@@ -52,21 +53,40 @@ static NSString * const reuseIdentifier = @"RightCell";
 {
     __weak typeof(self) copy_self = self;
     
+#ifdef __IPHONE_9_0
+    
+    //设置便利属性，为了提升速度，只要姓名以及电话属性
+    self.contactManager.descriptors = [NSString RITLContactNamePhoneKeys];
+    
+#endif
+    
+    //通讯发生变化进行的回调
+    self.contactManager.contactDidChange = ^(NSArray <RITLContactObject *>* contacts){
+      
+        [copy_self __reloadTableView:contacts];
+        
+    };
+    
     //开始请求
     [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
         
-        //开始赋值
-        copy_self.contactObjects = contacts;
-        copy_self.titles = [UILocalizedIndexedCollation currentCollation].sectionTitles;
-        
-        //刷新
-        [copy_self.tableView reloadData];
+        [copy_self __reloadTableView:contacts];
         
     } defendBlock:^{
         
         //maybe you can present an AlerViewController to prompt user some message
         
     }];
+}
+
+- (void)__reloadTableView:(NSArray <RITLContactObject *> *)contactObjects
+{
+    //开始赋值
+    self.contactObjects = contactObjects;
+    self.titles = [UILocalizedIndexedCollation currentCollation].sectionTitles;
+    
+    //刷新
+    [self.tableView reloadData];
 }
 
 
@@ -80,7 +100,7 @@ static NSString * const reuseIdentifier = @"RightCell";
 
 -(void)dealloc
 {
- 
+    NSLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
 
 #pragma mark - Table view data source

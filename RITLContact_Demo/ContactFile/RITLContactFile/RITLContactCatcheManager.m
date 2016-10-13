@@ -92,9 +92,12 @@
                 
             }];
             
-            //完成之后进行回调
-            completeBlock(self.identifiers);
-            
+            //主线程完成之后进行回调
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                 completeBlock(self.identifiers);
+                
+            });
         });
 }
 

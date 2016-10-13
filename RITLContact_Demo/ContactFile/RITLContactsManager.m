@@ -79,6 +79,9 @@
     
     if (!isAvailableContactFramework)
     {
+        //change Block
+        self.addressBookContactManager.addressBookDidChange = self.contactDidChange;
+        
         //如果是addressBook
         [self.addressBookContactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
             
@@ -89,15 +92,13 @@
             defendBlock();
             
         }];
-        
-        //change Block
-        self.addressBookContactManager.addressBookDidChange = [completeBlock copy];
-        
     }
     
 #else
-    
     //如果是contact
+    self.contactManager.descriptors = self.descriptors;
+    self.contactManager.contactDidChange = self.contactDidChange;
+    
     [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
         
         completeBlock(contacts);
@@ -107,8 +108,6 @@
         defendBlock();
         
     }];
-    
-    self.contactManager.contactDidChange = [completeBlock copy];
     
 #endif
 }

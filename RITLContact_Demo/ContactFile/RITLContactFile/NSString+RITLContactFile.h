@@ -23,6 +23,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 
+
+/**
+ 获得联系人所有描述名字以及电话的便利方法
+
+ @return 存放姓名以及电话描述键的便利方法
+ */
++ (NSArray <id <CNKeyDescriptor>> *)RITLContactNamePhoneKeys;
+
+
+
 /**
  获得所有联系人的所有键的便利方法
 

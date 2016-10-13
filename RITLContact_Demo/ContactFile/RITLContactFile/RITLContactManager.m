@@ -21,6 +21,10 @@
 
 @interface RITLContactManager ()
 
+#pragma 由于暂时无法解决通知多次响应的问题，以3s为限制，只响应一次通知回调
+/// 表示是否响应监听回调
+@property (nonatomic, assign, getter=shouldResponseContactChange) BOOL responseContactChange;
+
 /// 表示是否已经做监听
 @property (nonatomic, assign) BOOL notificationDidAdd;
 
@@ -45,7 +49,7 @@
     {
         //初始化CNContactStore
         self.contactStore = [CNContactStore new];
-
+        self.responseContactChange = true;
     }
     
     return self;
@@ -81,6 +85,17 @@
     [self __checkAuthorizationStatus];
 }
 
+
+-(NSArray<id<CNKeyDescriptor>> *)descriptors
+{
+    if (_descriptors == nil)
+    {
+        return [NSString RITLContactAllKeys];
+    }
+    
+    return _descriptors;
+}
+
 #pragma mark - private function
 /**
  检测权限并作响应的操作
@@ -113,12 +128,7 @@
  */
 - (void)__obtainContacts:(void (^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
 {
-    if (self.notificationDidAdd == false)
-    {
-        //添加通知
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(__contactDidChange:) name:CNContactStoreDidChangeNotification object:nil];
-        self.notificationDidAdd = !self.notificationDidAdd;
-    }
+    [self __addStoreDidChangeNotification];
     
     __weak typeof(self) weakSelf = self;
     
@@ -127,16 +137,26 @@
 
         NSArray * contacts = [weakSelf __contactHandleWithIdentifiers:identifiers];
         
-        //主线程回调
-        dispatch_async(dispatch_get_main_queue(), ^{
-           
-            completeBlock([contacts mutableCopy]);
-            
-        });
+        completeBlock([contacts mutableCopy]);
+
     }];
 }
 
 
+
+/**
+ 添加变化监听
+ */
+- (void)__addStoreDidChangeNotification
+{
+    if (self.notificationDidAdd == false)
+    {
+        //添加通知
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(__contactDidChange:) name:CNContactStoreDidChangeNotification object:nil];
+        self.notificationDidAdd = !self.notificationDidAdd;
+    }
+    
+}
 
 
 /**
@@ -178,14 +198,28 @@
     //重新获取通讯录
     if (self.contactDidChange != nil )
     {
-        //重新加载缓存
-        [[RITLContactCatcheManager sharedInstace]reloadContactIdentifiers:^(NSArray<NSString *> * _Nonnull identifiers) {
+        //如果可以进行回调
+        if (self.shouldResponseContactChange == true)
+        {
+            //重新加载缓存
+            [[RITLContactCatcheManager sharedInstace]reloadContactIdentifiers:^(NSArray<NSString *> * _Nonnull identifiers) {
+                
+                NSArray * contacts = [self __contactHandleWithIdentifiers:identifiers];
+                
+                //回调
+                self.contactDidChange([contacts mutableCopy]);
+            }];
             
-            NSArray * contacts = [self __contactHandleWithIdentifiers:identifiers];
+            self.responseContactChange = false;
             
-            //回调
-            self.contactDidChange([contacts mutableCopy]);
-        }];
+            //延迟3s
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                
+                self.responseContactChange = true;
+                
+            });
+        }
+
     }
     
 }
@@ -206,7 +240,7 @@
     
     for (NSString * identifier in identifiers)
     {
-        CNContact * contact = [self.contactStore unifiedContactWithIdentifier:identifier keysToFetch:[NSString RITLContactAllKeys] error:nil];
+        CNContact * contact = [self.contactStore unifiedContactWithIdentifier:identifier keysToFetch:self.descriptors error:nil];
         
         //进行对象的处理
         RITLContactObject * contactObject = [RITLContactObjectManager contantObject:contact];

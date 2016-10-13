@@ -6,6 +6,37 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--主页-->
+        <scene sceneID="CD1-2K-EPm">
+            <objects>
+                <viewController id="KEF-PF-zEU" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="LCA-ax-wGu"/>
+                        <viewControllerLayoutGuide type="bottom" id="uqC-cF-88m"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="bj0-Sg-oCX">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L34-0j-TyK">
+                                <state key="normal" title="MyContact"/>
+                                <connections>
+                                    <segue destination="YHw-UP-d3s" kind="show" id="Ogv-yl-H6e"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.70452766219999996" green="0.84313725490000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="L34-0j-TyK" firstAttribute="centerX" secondItem="bj0-Sg-oCX" secondAttribute="centerX" id="26Q-PD-vwB"/>
+                            <constraint firstItem="L34-0j-TyK" firstAttribute="centerY" secondItem="bj0-Sg-oCX" secondAttribute="centerY" id="m81-SN-iLw"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="主页" id="CCl-dj-xC5"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iIQ-bt-X5a" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="24" y="-84"/>
+        </scene>
         <!--通讯录-->
         <scene sceneID="iDB-1f-nlL">
             <objects>
@@ -49,7 +80,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4nw-9e-GA6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="415" y="-84"/>
+            <point key="canvasLocation" x="654" y="-84"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zD4-do-aHf">
@@ -60,12 +91,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="YHw-UP-d3s" kind="relationship" relationship="rootViewController" id="545-yf-GPH"/>
+                        <segue destination="KEF-PF-zEU" kind="relationship" relationship="rootViewController" id="CAY-Tu-16L"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iEn-cT-1G9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-422" y="-84"/>
+            <point key="canvasLocation" x="-617" y="-84"/>
         </scene>
     </scenes>
 </document>

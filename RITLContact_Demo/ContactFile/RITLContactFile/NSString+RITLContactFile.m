@@ -32,6 +32,14 @@
 }
 
 
++(NSArray<id<CNKeyDescriptor>> *)RITLContactNamePhoneKeys
+{
+    NSArray * nameKeys = [self RITLContactNameKeys];
+    NSArray * phoneKeys = @[CNContactPhoneNumbersKey];
+    
+    return [nameKeys arrayByAddingObjectsFromArray:phoneKeys];
+}
+
 
 +(NSArray <id<CNKeyDescriptor>> *)RITLContactAllKeys
 {
