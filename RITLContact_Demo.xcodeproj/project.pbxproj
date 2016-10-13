@@ -23,6 +23,7 @@
 		DB62E07A1DAC8779001A59F8 /* RITLContactManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DB62E0791DAC8779001A59F8 /* RITLContactManager.m */; };
 		DB62E07D1DAC8EF4001A59F8 /* CNContactFetchRequest+RITLContactFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DB62E07C1DAC8EF4001A59F8 /* CNContactFetchRequest+RITLContactFile.m */; };
 		DBCD75BA1DAF5CCA005ACA15 /* RITLContactCatcheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DBCD75B91DAF5CCA005ACA15 /* RITLContactCatcheManager.m */; };
+		DBCD75BD1DAF834D005ACA15 /* UIAlertController+RITLContactFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DBCD75BC1DAF834D005ACA15 /* UIAlertController+RITLContactFile.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,8 @@
 		DB62E07E1DAC9158001A59F8 /* RITLContacts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RITLContacts.h; sourceTree = "<group>"; };
 		DBCD75B81DAF5CCA005ACA15 /* RITLContactCatcheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RITLContactCatcheManager.h; sourceTree = "<group>"; };
 		DBCD75B91DAF5CCA005ACA15 /* RITLContactCatcheManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RITLContactCatcheManager.m; sourceTree = "<group>"; };
+		DBCD75BB1DAF834D005ACA15 /* UIAlertController+RITLContactFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+RITLContactFile.h"; sourceTree = "<group>"; };
+		DBCD75BC1DAF834D005ACA15 /* UIAlertController+RITLContactFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+RITLContactFile.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +97,8 @@
 				DB62E04A1DAC6F89001A59F8 /* RITLContactAppDelegate.m */,
 				DB62E06C1DAC75D4001A59F8 /* RITLContactsTableViewController.h */,
 				DB62E06D1DAC75D4001A59F8 /* RITLContactsTableViewController.m */,
+				DBCD75BB1DAF834D005ACA15 /* UIAlertController+RITLContactFile.h */,
+				DBCD75BC1DAF834D005ACA15 /* UIAlertController+RITLContactFile.m */,
 				DB62E04F1DAC6F89001A59F8 /* Main.storyboard */,
 				DB62E0521DAC6F89001A59F8 /* Assets.xcassets */,
 				DB62E0541DAC6F89001A59F8 /* LaunchScreen.storyboard */,
@@ -236,6 +241,7 @@
 				DB62E0771DAC8736001A59F8 /* RITLContactObjectManager.m in Sources */,
 				DB62E07D1DAC8EF4001A59F8 /* CNContactFetchRequest+RITLContactFile.m in Sources */,
 				DB62E04B1DAC6F89001A59F8 /* RITLContactAppDelegate.m in Sources */,
+				DBCD75BD1DAF834D005ACA15 /* UIAlertController+RITLContactFile.m in Sources */,
 				DBCD75BA1DAF5CCA005ACA15 /* RITLContactCatcheManager.m in Sources */,
 				DB62E0711DAC7CA1001A59F8 /* RITLAddressBookContactManager.m in Sources */,
 				DB62E0741DAC7FC6001A59F8 /* RITLContactsManager.m in Sources */,

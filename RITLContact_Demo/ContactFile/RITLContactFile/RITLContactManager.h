@@ -52,4 +52,17 @@ NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactManager : NSObject
 
 @end
 
+
+@interface RITLContactManager (RITLAddContact)
+
+
+/**
+ 添加联系人
+
+ @param contact 添加的联系人对象
+ */
+- (void)addContact:(RITLContactObject *)contact;
+
+@end
+
 NS_ASSUME_NONNULL_END

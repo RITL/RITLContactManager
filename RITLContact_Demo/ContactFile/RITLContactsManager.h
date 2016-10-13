@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger,ContactsType)
 /**
  *  RITLContactsManager单例
  */
-+(instancetype)sharedInstance __deprecated_msg("singlecase is not implementation now,please use [[RITLContactsManager alloc] init]");
+//+(instancetype)sharedInstance __deprecated_msg("singlecase is not implementation now,please use [[RITLContactsManager alloc] init]");
 
 
 /**
@@ -83,10 +83,14 @@ typedef NS_ENUM(NSInteger,ContactsType)
 /**
  *  手动进行联系人数据添加类目
  */
-@interface RITLContactsManager (YCodingHandle)
+@interface RITLContactsManager (RITLAddContact)
 
+/**
+ 向通讯录里添加联系人
 
-- (void)codingAddPersonToAddressBook;
+ @param contact 添加的联系人
+ */
+- (void)addContact:(RITLContactObject *)contact;
 
 
 @end

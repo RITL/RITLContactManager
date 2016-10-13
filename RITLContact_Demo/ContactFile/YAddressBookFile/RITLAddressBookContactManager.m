@@ -189,7 +189,13 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 
     });
 }
+@end
 
+@implementation RITLAddressBookContactManager (RITLAddContact)
 
+-(void)addContact:(RITLContactObject *)contact
+{
+    NSLog(@"RITLAddressBookcontact add contact");
+}
 
 @end

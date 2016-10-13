@@ -74,7 +74,7 @@ NSArray<NSString *> * propertyNames(id object)
 
 -(BOOL)hasMulitPhone
 {
-    if (_phoneObject.count >= 1)
+    if (_phoneObject.count > 1)
     {
         return true;
     }

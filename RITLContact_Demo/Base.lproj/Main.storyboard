@@ -76,7 +76,13 @@
                             <outlet property="delegate" destination="YHw-UP-d3s" id="EFP-hx-VdP"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="通讯录" id="Y3Y-Ci-Hdd"/>
+                    <navigationItem key="navigationItem" title="通讯录" id="Y3Y-Ci-Hdd">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="wv8-XC-FM0">
+                            <connections>
+                                <action selector="addContact:" destination="YHw-UP-d3s" id="HpW-XK-7Dt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4nw-9e-GA6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

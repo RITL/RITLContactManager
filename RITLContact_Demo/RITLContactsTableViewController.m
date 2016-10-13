@@ -10,6 +10,7 @@
 #import "RITLContactsManager.h"
 #import "RITLContactObject.h"
 #import "NSString+RITLContactFile.h"
+#import "UIAlertController+RITLContactFile.h"
 
 
 
@@ -136,6 +137,16 @@ static NSString * const reuseIdentifier = @"RightCell";
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //select cell coding...
+    
+    //get model
+    RITLContactObject * contactObject = self.handleContactObjects[indexPath.section][indexPath.row];
+    
+    //进行判断
+    [self presentViewController:[UIAlertController alertControllerWithContactObject:contactObject] animated:true completion:^{
+        
+    }];
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:true];
 
 }
 
@@ -180,6 +191,12 @@ static NSString * const reuseIdentifier = @"RightCell";
     return [RITLContactSortManager defaultHandleContactObject:self.contactObjects];
 }
 
+
+
+- (IBAction)addContact:(id)sender
+{
+    [self.contactManager addContact:nil];
+}
 
 
 @end

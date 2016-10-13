@@ -225,8 +225,6 @@
 }
 
 
-
-
 /**
  将所有的identifiers转成RITLObject对象
 
@@ -251,5 +249,14 @@
     return [contacts mutableCopy];
 }
 
+@end
+
+
+@implementation RITLContactManager (RITLAddContact)
+
+-(void)addContact:(RITLContactObject *)contact
+{
+    NSLog(@"RITLContactManager add contact");
+}
 
 @end

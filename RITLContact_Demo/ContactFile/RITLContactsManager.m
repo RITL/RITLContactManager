@@ -60,7 +60,10 @@
 }
 
 
-
+-(void)dealloc
+{
+    NSLog(@"%@ dealloc",NSStringFromClass([self class]));
+}
 
 
 
@@ -115,13 +118,16 @@
 @end
 
 
+@implementation RITLContactsManager (RITLAddContact)
 
-
-
-
-
-
-@implementation RITLContactsManager (YCodingHandle)
+-(void)addContact:(RITLContactObject *)contact
+{
+#ifndef ContactFrameworkIsAvailable
+    [self.addressBookContactManager addContact:contact];
+#else
+    [self.contactManager addContact:contact];
+#endif
+}
 
 
 ///**

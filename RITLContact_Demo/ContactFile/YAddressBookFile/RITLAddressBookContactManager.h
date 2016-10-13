@@ -36,4 +36,17 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactManager instead") @interface RI
 
 @end
 
+
+@interface RITLAddressBookContactManager (RITLAddContact)
+
+
+/**
+ 添加联系人
+
+ @param contact 添加的联系人对象
+ */
+- (void)addContact:(RITLContactObject *)contact NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactManager instead");
+
+@end
+
 NS_ASSUME_NONNULL_END

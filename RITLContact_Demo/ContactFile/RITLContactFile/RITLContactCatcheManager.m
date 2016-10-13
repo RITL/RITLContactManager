@@ -67,8 +67,18 @@
         }];
     }
     
-    //直接返回
-    else completeBlock(self.identifiers);
+    else
+    {
+        //直接返回，避免缓存之后跳转页面阻塞线程卡顿
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+           
+            //主线程回调
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                completeBlock(self.identifiers);
+            });
+        });
+    }
 }
 
 
