@@ -257,6 +257,24 @@
 -(void)addContact:(RITLContactObject *)contact
 {
     NSLog(@"RITLContactManager add contact");
+    
+    //获得对象
+    CNMutableContact * cnContact = [RITLContactObjectManager cnContact:contact];
+    
+    CNSaveRequest * saveRequest = [[CNSaveRequest alloc]init];
+    [saveRequest addContact:cnContact toContainerWithIdentifier:nil];
+    
+    NSError * error;
+    
+    if([self.contactStore executeSaveRequest:saveRequest error:&error])
+    {
+        if (error != nil)
+        {
+            NSLog(@"error = %@",error.localizedDescription);
+        }
+        
+        else NSLog(@"RITLContactManager add success");
+    };
 }
 
 @end

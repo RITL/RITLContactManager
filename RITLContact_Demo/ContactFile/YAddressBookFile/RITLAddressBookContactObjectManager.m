@@ -441,6 +441,248 @@ static NSString * const RITLAddressBookContactsManager;
     }
     return [NSArray arrayWithArray:socialProfiles];
 }
+@end
 
+
+
+@implementation RITLAddressBookContactObjectManager (ABRecordRef)
+
++(ABRecordRef)recordRef:(RITLContactObject *)contactObject
+{
+    //实例化ABRecordRef
+    ABRecordRef recordRef = ABPersonCreate();
+
+    //set value
+    [self __nameObject:recordRef object:contactObject];
+    [self __contactType:recordRef object:contactObject];
+    [self __headImage:recordRef object:contactObject];
+    [self __contactPhone:recordRef object:contactObject];
+    [self __contactJob:recordRef object:contactObject];
+    [self __contactEmail:recordRef object:contactObject];
+    [self __contactAddress:recordRef object:contactObject];
+    [self __contactBrithday:recordRef object:contactObject];
+    
+    return recordRef;
+}
+
+
+
+/**
+ 添加姓名属性
+
+ @param recordRef   ABRecordRef数据
+ @param contact     添加的RITLContactObject对象
+ */
++ (BOOL)__nameObject:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    //获得名字对象
+    RITLContactNameObject * nameObject = contact.nameObject;
+    
+    /*添加联系人姓名属性*/
+    ABRecordSetValue(recordRef, kABPersonFirstNameProperty, (__bridge CFTypeRef)(nameObject.givenName), &error);       //名字
+    ABRecordSetValue(recordRef, kABPersonLastNameProperty, (__bridge CFStringRef)(nameObject.familyName), &error);        //姓氏
+    ABRecordSetValue(recordRef, kABPersonMiddleNameProperty,(__bridge CFStringRef)(nameObject.middleName), &error);        //名字中的信仰名称（比如Jane·K·Frank中的K
+    ABRecordSetValue(recordRef, kABPersonPrefixProperty,(__bridge CFStringRef)(nameObject.namePrefix), &error);             //名字前缀
+    ABRecordSetValue(recordRef, kABPersonSuffixProperty,(__bridge CFStringRef)(nameObject.nameSuffix), &error);             //名字后缀
+    ABRecordSetValue(recordRef, kABPersonNicknameProperty,(__bridge CFStringRef)(nameObject.nickName), &error);            //名字昵称
+    ABRecordSetValue(recordRef, kABPersonFirstNamePhoneticProperty,(__bridge CFStringRef)(nameObject.phoneticGivenName), &error);//名字的拼音音标
+    ABRecordSetValue(recordRef, kABPersonLastNamePhoneticProperty,(__bridge CFStringRef)(nameObject.phoneticFamilyName), &error); //姓氏的拼音音标
+    ABRecordSetValue(recordRef, kABPersonMiddleNamePhoneticProperty,(__bridge CFStringRef)(nameObject.phoneticMiddleName), &error); //英文信仰缩写字母的拼音音标
+    
+    return [self __errorExit:error];
+}
+
+
+
+/**
+ 添加类型属性
+
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactType:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    CFNumberRef type = (contact.type == RITLContactTypePerson ? kABPersonKindPerson:kABPersonKindOrganization);
+    
+    /*添加联系人类型属性*/
+    ABRecordSetValue(recordRef, kABPersonKindProperty, type, &error);      //设置为个人类型
+    
+    CFRelease(type);
+
+    return [self __errorExit:error];
+}
+
+
+/**
+ 添加头像属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__headImage:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    ABPersonSetImageData(recordRef, (__bridge CFDataRef)(UIImagePNGRepresentation(contact.headImage)),&error);//设置联系人头像
+    
+    return [self __errorExit:error];
+}
+
+/**
+ 添加电话属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactPhone:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    ABMultiValueRef phoneMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    
+    
+    for (RITLContactPhoneObject * phoneObject in contact.phoneObject)
+    {
+        ABMultiValueIdentifier identifier;
+        
+        ABMultiValueAddValueAndLabel(phoneMultiValue, (__bridge CFStringRef)(phoneObject.phoneNumber), (__bridge CFStringRef)(phoneObject.phoneTitle), &identifier);//自定义标签
+    }
+    
+    ABRecordSetValue(recordRef, kABPersonPhoneProperty, phoneMultiValue, &error);
+    
+    CFRelease(phoneMultiValue);
+    
+    return  [self __errorExit:error];
+}
+
+/**
+ 添加工作信息属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactJob:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    ABRecordSetValue(recordRef, kABPersonOrganizationProperty, (__bridge CFStringRef)(contact.jobObject.organizationName), &error);//公司(组织)名称
+    ABRecordSetValue(recordRef, kABPersonDepartmentProperty, (__bridge CFStringRef)(contact.jobObject.departmentName), &error);  //部门
+    ABRecordSetValue(recordRef, kABPersonJobTitleProperty, (__bridge CFStringRef)(contact.jobObject.jobTitle), &error);    //职位
+    
+    return [self __errorExit:error];
+}
+
+
+
+/**
+ 添加Email信息属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactEmail:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    //实例化多值属性
+    ABMultiValueRef emailMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+
+    
+    for (RITLContactEmailObject * emailObject in contact.emailAddresses)
+    {
+        ABMultiValueIdentifier identifier;
+        
+        ABMultiValueAddValueAndLabel(emailMultiValue, (__bridge CFStringRef)(emailObject.emailAddress), (__bridge CFStringRef)(emailObject.emailTitle),&identifier);
+    }
+
+    //添加属性
+    ABRecordSetValue(recordRef, kABPersonEmailProperty, emailMultiValue, &error);
+
+    //释放资源
+    CFRelease(emailMultiValue);
+    
+    return [self __errorExit:error];
+}
+
+
+/**
+ 添加地址信息属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactAddress:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    ABMultiValueRef addressMultiValue = ABMultiValueCreateMutable(kABMultiDictionaryPropertyType);
+
+
+    //初始化字典属性
+    CFMutableDictionaryRef addressDictionaryRef = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, NULL, NULL);
+
+    for (RITLContactAddressObject * addressObject in contact.addresses)
+    {
+        ABMultiValueIdentifier identifier;
+        
+        //进行添加
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressCountryKey, (__bridge CFStringRef)(addressObject.country));      //国家
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressCityKey, (__bridge CFStringRef)(addressObject.city));       //城市
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressStateKey, (__bridge CFStringRef)(addressObject.state));    //省(区)
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressStreetKey, (__bridge CFStringRef)(addressObject.street));      //街道
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressZIPKey, (__bridge CFStringRef)(addressObject.postalCode));         //邮编
+        CFDictionaryAddValue(addressDictionaryRef, kABPersonAddressCountryCodeKey, (__bridge CFStringRef)(addressObject.ISOCountryCode));    //ISO国家编码
+        
+        //添加属性
+        ABMultiValueAddValueAndLabel(addressMultiValue, addressDictionaryRef, (__bridge CFStringRef)(addressObject.addressTitle), &identifier);
+    }
+    
+    ABRecordSetValue(recordRef, kABPersonAddressProperty, addressMultiValue, &error);
+
+    //释放资源
+    CFRelease(addressMultiValue);
+    
+    return [self __errorExit:error];
+}
+
+
+/**
+ 添加生日信息属性
+ 
+ @param recordRef ABRecordRef数据
+ @param contact   添加的RITLContactObject对象
+ */
++(BOOL)__contactBrithday:(ABRecordRef)recordRef object:(RITLContactObject *)contact
+{
+    CFErrorRef error = NULL;
+    
+    ABRecordSetValue(recordRef, kABPersonBirthdayProperty, (__bridge CFTypeRef)(contact.brithdayObject.brithdayDate), &error);
+    
+    return [self __errorExit:error];
+}
+
+
+
+/**
+ 错误数据通用处理
+
+ @param error 错误数据
+
+ @return 是否存在错误
+ */
++ (BOOL)__errorExit:(CFErrorRef)error
+{
+    if (error != NULL)
+    {
+        NSLog(@"error = %@",error);
+        CFRelease(error);
+        return false;
+    }
+    
+    return true;
+}
 
 @end

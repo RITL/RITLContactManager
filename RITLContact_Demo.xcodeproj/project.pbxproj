@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DB0314391DACD39900E63804 /* RITLContactObject+RITLContactFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DB0314381DACD39900E63804 /* RITLContactObject+RITLContactFile.m */; };
 		DB40A9811DADCDEB0084DB35 /* NSString+RITLContactFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DB40A9801DADCDEB0084DB35 /* NSString+RITLContactFile.m */; };
+		DB4207FC1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DB4207FB1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.m */; };
 		DB62E0481DAC6F89001A59F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DB62E0471DAC6F89001A59F8 /* main.m */; };
 		DB62E04B1DAC6F89001A59F8 /* RITLContactAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DB62E04A1DAC6F89001A59F8 /* RITLContactAppDelegate.m */; };
 		DB62E0511DAC6F89001A59F8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DB62E04F1DAC6F89001A59F8 /* Main.storyboard */; };
@@ -31,6 +32,8 @@
 		DB0314381DACD39900E63804 /* RITLContactObject+RITLContactFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RITLContactObject+RITLContactFile.m"; sourceTree = "<group>"; };
 		DB40A97F1DADCDEB0084DB35 /* NSString+RITLContactFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+RITLContactFile.h"; sourceTree = "<group>"; };
 		DB40A9801DADCDEB0084DB35 /* NSString+RITLContactFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+RITLContactFile.m"; sourceTree = "<group>"; };
+		DB4207FA1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CNMutableContact+RITLContactFile.h"; sourceTree = "<group>"; };
+		DB4207FB1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CNMutableContact+RITLContactFile.m"; sourceTree = "<group>"; };
 		DB62E0431DAC6F89001A59F8 /* RITLContact_Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RITLContact_Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB62E0471DAC6F89001A59F8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DB62E0491DAC6F89001A59F8 /* RITLContactAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RITLContactAppDelegate.h; sourceTree = "<group>"; };
@@ -141,6 +144,8 @@
 				DB62E07C1DAC8EF4001A59F8 /* CNContactFetchRequest+RITLContactFile.m */,
 				DB0314371DACD39900E63804 /* RITLContactObject+RITLContactFile.h */,
 				DB0314381DACD39900E63804 /* RITLContactObject+RITLContactFile.m */,
+				DB4207FA1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.h */,
+				DB4207FB1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.m */,
 				DB40A97F1DADCDEB0084DB35 /* NSString+RITLContactFile.h */,
 				DB40A9801DADCDEB0084DB35 /* NSString+RITLContactFile.m */,
 				DBCD75B81DAF5CCA005ACA15 /* RITLContactCatcheManager.h */,
@@ -234,6 +239,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB62E06B1DAC700B001A59F8 /* RITLContactObject.m in Sources */,
+				DB4207FC1DB0AF2B0013DAFF /* CNMutableContact+RITLContactFile.m in Sources */,
 				DB0314391DACD39900E63804 /* RITLContactObject+RITLContactFile.m in Sources */,
 				DB62E07A1DAC8779001A59F8 /* RITLContactManager.m in Sources */,
 				DB40A9811DADCDEB0084DB35 /* NSString+RITLContactFile.m in Sources */,

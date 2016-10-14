@@ -9,6 +9,7 @@
 #import "RITLContactObjectManager.h"
 #import "RITLContactObject.h"
 #import "RITLContactObject+RITLContactFile.h"
+#import "CNMutableContact+RITLContactFile.h"
 #import "NSString+RITLContactFile.h"
 @import ObjectiveC;
 @import Contacts;
@@ -424,6 +425,51 @@ static NSString * currentContactKey = @"currentContact";
     }
     
     return nil;
+}
+
+@end
+
+
+@implementation RITLContactObjectManager (CNContact)
+
++(CNMutableContact *)cnContact:(RITLContactObject *)contactObject
+{
+    CNMutableContact * contact = [[CNMutableContact alloc]init];
+    
+    //name
+    [contact nameWithNameObject:contactObject.nameObject];
+    
+    //phone
+    [contact phoneWithPhoneObjects:contactObject.phoneObject];
+    
+    //type
+    contact.contactType = (contactObject.type == RITLContactTypePerson ? CNContactTypePerson : CNContactTypeOrganization);
+    
+    //headImage
+    contact.imageData = UIImagePNGRepresentation(contactObject.headImage);
+    
+    //Job
+    [contact jobWithJobObjects:contactObject.jobObject];
+    
+    //email
+    [contact emailWithEmailObjects:contactObject.emailAddresses];
+    
+    //brithday
+    
+    
+    //note
+    contact.note = contactObject.note;
+    
+    //address
+    [contact addressWithAddressObjects:contactObject.addresses];
+    
+    //instant
+    [contact instantWithInstantObjects:contactObject.instantMessage];
+    
+    //social
+    [contact socialProfileWithSocialObjects:contactObject.socialProfiles];
+    
+    return contact;
 }
 
 @end

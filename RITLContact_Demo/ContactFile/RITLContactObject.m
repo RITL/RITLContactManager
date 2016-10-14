@@ -88,6 +88,31 @@ NSArray<NSString *> * propertyNames(id object)
     return [super resolveInstanceMethod:sel];
 }
 
+/*** 测试数据 ***/
++(instancetype)testContactObject
+{
+    RITLContactObject * testObject = [[RITLContactObject alloc]init];
+    
+    
+    //name
+    RITLContactNameObject * nameObject = [[RITLContactNameObject alloc]init];
+    nameObject.givenName = @"RITL_textName";
+    
+    testObject.nameObject = nameObject;
+    
+    //phone
+    RITLContactPhoneObject * phoneObject = [[RITLContactPhoneObject alloc]init];
+    phoneObject.phoneTitle = @"测试";
+    phoneObject.phoneNumber = @"110110110110";
+    
+    testObject.phoneObject = @[phoneObject];
+    
+    
+    return testObject;
+    
+}
+/*** 测试数据 ***/
+
 @end
 
 

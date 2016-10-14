@@ -32,7 +32,7 @@
     
     else//多个phone
     {
-        title = [NSString stringWithFormat:@"%@有多个电话号码",contactObject.nameObject.name];
+        title = [NSString stringWithFormat:@"%@有%@个电话号码",contactObject.nameObject.name,@(contactObject.phoneObject.count)];
         style = UIAlertControllerStyleActionSheet;
         
     }

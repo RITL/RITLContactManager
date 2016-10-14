@@ -103,6 +103,21 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 @property (nonatomic, copy) NSArray <RITLContactSocialProfileObject *> * socialProfiles;
 
 
+/*** 测试数据 ***/
+/*** 测试数据 ***/
+/*** 测试数据 ***/
+
+/**
+ 测试数据
+ 
+ @return 获得测试的RITLContactObject数据
+ */
++ (instancetype)testContactObject;
+/*** 测试数据 ***/
+/*** 测试数据 ***/
+/*** 测试数据 ***/
+
+
 @end
 
 
@@ -294,6 +309,7 @@ NS_CLASS_AVAILABLE_IOS(2_0) @interface RITLContactAddressObject : NSObject
  地址的描述字符串，eg 中国 山东 潍坊 XX 261800
  */
 @property (nonatomic, copy)NSString * formattedAddress NS_AVAILABLE_IOS(9_0);
+
 
 @end
 

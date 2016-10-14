@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class CNContact;
+@class CNMutableContact;
 @class RITLContactObject;
 
 
@@ -18,9 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
  针对Contacts.framework进行的封装
  */
 NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactObjectManager : NSObject
-
-
-
 
 
 /**
@@ -32,6 +30,21 @@ NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactObjectManager : NSObject
  */
 +(RITLContactObject *)contantObject:(CNContact *)contact;
 
+
+@end
+
+
+@interface RITLContactObjectManager (CNContact)
+
+
+/**
+ 根据RITLContactObject对象获得CNContact对象
+
+ @param contactObject RITLContactObject对象
+
+ @return CNContact对象
+ */
++(CNMutableContact *)cnContact:(RITLContactObject *)contactObject;
 
 @end
 

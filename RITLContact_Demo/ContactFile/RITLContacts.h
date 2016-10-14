@@ -11,7 +11,7 @@
 
 
 #define isAvailableContactFramework ([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
-//#define isAvailableContactFramework (false)
+//#define isAvailableContactFramework (false)//调试AddressBook
 
 #ifdef __IPHONE_9_0
     #define ContactFrameworkIsAvailable

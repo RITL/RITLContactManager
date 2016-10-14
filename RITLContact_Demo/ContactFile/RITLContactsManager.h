@@ -86,11 +86,11 @@ typedef NS_ENUM(NSInteger,ContactsType)
 @interface RITLContactsManager (RITLAddContact)
 
 /**
- 向通讯录里添加联系人
+ 向通讯录里添加联系人,目前使用AddressBook会出现问题
 
  @param contact 添加的联系人
  */
-- (void)addContact:(RITLContactObject *)contact;
+- (void)addContact:(RITLContactObject *)contact NS_AVAILABLE_IOS(9_0);
 
 
 @end

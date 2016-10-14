@@ -118,9 +118,12 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
  */
 - (void)__obtainContacts:(ABAddressBookRef)addressBook completeBlock:(void(^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
 {
-    
+    @try {
+        
     //按照添加时间请求所有的联系人
     CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(addressBook);
+
+
     
     //按照排序规则请求所有的联系人
     //    ABRecordRef recordRef = ABAddressBookCopyDefaultSource(addressBook);
@@ -157,6 +160,14 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
             completeBlock([NSArray arrayWithArray:contacts]);
         }
     });
+        
+    } @catch (NSException *exception) {
+        
+        NSLog(@"exception = %@",exception.reason);
+        
+    } @finally {
+        
+    }
 
 }
 
@@ -195,7 +206,40 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 
 -(void)addContact:(RITLContactObject *)contact
 {
+    
     NSLog(@"RITLAddressBookcontact add contact");
+    
+    ABAddressBookRef addressBook = ABAddressBookCreate();
+    
+    ABRecordRef recordRef = [RITLAddressBookContactObjectManager recordRef:contact];
+    
+    if(ABAddressBookAddRecord(addressBook, recordRef, nil) == true)
+    {
+        NSLog(@"add success");
+    }
+    
+//    NSError ** nsError;
+    CFErrorRef error;
+    
+    if(ABAddressBookSave(addressBook, &error) == true)
+    {
+        if (error != NULL)
+        {
+//            NSLog(@"error = %@",error);
+//            * nsError = CFBridgingRelease(error);
+        }
+        else NSLog(@"save success");
+    }
+    
+    CFRelease(recordRef);
+    CFRelease(addressBook);
+    if (error != NULL)
+    {
+        CFRelease(error);
+    }
+
 }
+
+
 
 @end
