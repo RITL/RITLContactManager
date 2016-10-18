@@ -11,6 +11,8 @@
 #import "RITLContactObject.h"
 #import "RITLAddressBookContactObjectManager.h"
 
+static NSNotificationName const addressBookDidChanged = @"RITLADDRESSBOOKDIDCHANGED";
+
 @interface RITLAddressBookContactManager ()
 
 /// 请求通讯录的结构体对象
@@ -37,7 +39,10 @@
         self.addressBook = ABAddressBookCreate();
         
         //注册监听
-        ABAddressBookRegisterExternalChangeCallback(self.addressBook,addressBookChangeCallBack,(__bridge_retained void *)(self));
+        ABAddressBookRegisterExternalChangeCallback(self.addressBook,addressBookChangeCallBack,nil);
+        
+        //收通知
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(__handleAddressBookDidChanged) name:addressBookDidChanged object:nil];
     }
     
     return self;
@@ -49,15 +54,19 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 {
     //coding when addressBook did changed
     NSLog(@"通讯录发生变化啦");
+    
+    //发送通知
+    [[NSNotificationCenter defaultCenter]postNotificationName:addressBookDidChanged object:nil];
+}
 
-    //初始化对象
-    RITLAddressBookContactManager * contactManager = CFBridgingRelease(context);
 
+- (void)__handleAddressBookDidChanged
+{
     //重新获取联系人
     //必须在同一个线程
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        [contactManager __obtainContactCompleteBlock:contactManager.addressBookDidChange];
+        [self __obtainContactCompleteBlock:self.addressBookDidChange];
         
         //获得修改的联系人数组
         /*no implementation....*/
@@ -69,8 +78,13 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 {
     //移除监听
     ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
+    
+    //移除
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
 
-//    CFRelease(self.addressBook);
+    CFRelease(self.addressBook);
+    
+    NSLog(@"%@ dealloc",NSStringFromClass([self class]));
 }
 
 
