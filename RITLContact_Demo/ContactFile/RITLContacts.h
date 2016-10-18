@@ -10,11 +10,11 @@
 #define RITLContacts_h
 
 
-//#define isAvailableContactFramework ([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
-#define isAvailableContactFramework (false)//调试AddressBook
+#define isAvailableContactFramework ([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
+//#define isAvailableContactFramework (false)//调试AddressBook
 
 #ifdef __IPHONE_9_0
-//    #define ContactFrameworkIsAvailable
+    #define ContactFrameworkIsAvailable
 #endif
 
 
