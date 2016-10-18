@@ -70,7 +70,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     //移除监听
     ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
 
-    CFRelease(self.addressBook);
+//    CFRelease(self.addressBook);
 }
 
 
