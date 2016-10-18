@@ -54,10 +54,14 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     RITLAddressBookContactManager * contactManager = CFBridgingRelease(context);
 
     //重新获取联系人
-    [contactManager __obtainContacts:addressBook completeBlock:contactManager.addressBookDidChange];
-    
-    //获得修改的联系人数组
-    /*no implementation....*/
+    //必须在同一个线程
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [contactManager __obtainContactCompleteBlock:contactManager.addressBookDidChange];
+        
+        //获得修改的联系人数组
+        /*no implementation....*/
+    });
 }
 
 
@@ -80,6 +84,8 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     self.completeBlock = completeBlock;
     self.defendBlock = defendBlock;
     
+    
+    
     //验证权限并进行下一步操作
     [self __checkAuthorizationStatus];
 }
@@ -96,8 +102,14 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     {
             //存在权限
         case kABAuthorizationStatusAuthorized:
-            //获取通讯录
-            [self __obtainContacts:self.addressBook completeBlock:self.completeBlock];
+        {
+            //主线程
+            dispatch_async(dispatch_get_main_queue(), ^{
+              
+                //获取通讯录
+                [self __obtainContactCompleteBlock:self.completeBlock];
+            });
+        }
             break;
             
             //权限未知
@@ -116,15 +128,14 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 /**
  *  获取通讯录中的联系人
  */
-- (void)__obtainContacts:(ABAddressBookRef)addressBook completeBlock:(void(^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
+- (void)__obtainContactCompleteBlock:(void(^)(NSArray<RITLContactObject *> * _Nonnull)) completeBlock
 {
-    @try {
-        
+
+    ABAddressBookRef addressBook = ABAddressBookCreate();
+    
     //按照添加时间请求所有的联系人
     CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(addressBook);
 
-
-    
     //按照排序规则请求所有的联系人
     //    ABRecordRef recordRef = ABAddressBookCopyDefaultSource(addressBook);
     //    CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeopleInSourceWithSortOrdering(addressBook, recordRef, kABPersonSortByFirstName);
@@ -147,28 +158,16 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
         CFRelease(recordRef);
         
     }
+        
+    if (completeBlock != nil)
+    {
+        //进行数据回调
+        completeBlock([NSArray arrayWithArray:contacts]);
+    }
     
     //释放资源
     CFRelease(allContacts);
-    
-    //主线程回调
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        if (completeBlock != nil)
-        {
-            //进行数据回调
-            completeBlock([NSArray arrayWithArray:contacts]);
-        }
-    });
-        
-    } @catch (NSException *exception) {
-        
-        NSLog(@"exception = %@",exception.reason);
-        
-    } @finally {
-        
-    }
-
+//    if(addressBook != NULL) CFRelease(addressBook);
 }
 
 
@@ -189,7 +188,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
             //权限得到允许
             if (granted == true)
             {
-                [copy_self __obtainContacts:copy_self.addressBook completeBlock:self.completeBlock];
+                [copy_self __obtainContactCompleteBlock:self.completeBlock];
             }
             
             else
@@ -213,31 +212,40 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     
     ABRecordRef recordRef = [RITLAddressBookContactObjectManager recordRef:contact];
     
-    if(ABAddressBookAddRecord(addressBook, recordRef, nil) == true)
-    {
-        NSLog(@"add success");
-    }
-    
-//    NSError ** nsError;
-    CFErrorRef error;
-    
-    if(ABAddressBookSave(addressBook, &error) == true)
-    {
+    dispatch_async(dispatch_get_main_queue(), ^{
+       
+        if(ABAddressBookAddRecord(addressBook, recordRef, nil) == true)
+        {
+            NSLog(@"add success");
+        }
+        
+        CFErrorRef error;
+        
+        if (ABAddressBookHasUnsavedChanges(addressBook))
+        {
+            if(ABAddressBookSave(addressBook, &error) == true)
+            {
+                NSLog(@"save");
+                
+                if (error != NULL)
+                {
+                    //                NSLog(@"error = %@",error);
+                }
+                
+                else NSLog(@"save success");
+            }
+        }
+        
+        CFRelease(recordRef);
+        
         if (error != NULL)
         {
-//            NSLog(@"error = %@",error);
-//            * nsError = CFBridgingRelease(error);
+            //        CFRelease(error);
         }
-        else NSLog(@"save success");
-    }
-    
-    CFRelease(recordRef);
-    CFRelease(addressBook);
-    if (error != NULL)
-    {
-        CFRelease(error);
-    }
-
+        
+        CFRelease(addressBook);
+        
+    });
 }
 
 
