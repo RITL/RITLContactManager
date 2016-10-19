@@ -296,23 +296,19 @@ static NSString * currentContactKey = @"currentContact";
  */
 + (RITLContactType)__contactTypeProperty
 {
-    if (![self.currentContact isKeyAvailable:CNContactTypeKey]) {
-        
-        return RITLContactTypeUnknown;
-        
+    if (![self.currentContact isKeyAvailable:CNContactTypeKey])
+    {
+        return RITLContactTypeUnknown;//没有可用就是未知
     }
     
-    else if (self.currentContact.contactType == CNContactTypeOrganization) {
-        
-        return RITLContactTypeOrigination;
+    else if (self.currentContact.contactType == CNContactTypeOrganization)
+    {
+        return RITLContactTypeOrigination;//如果是组织
     }
     
-    else if(self.currentContact.contactType == CNContactTypePerson){
-        
+    else{
         return RITLContactTypePerson;
     }
-        
-    return RITLContactTypeUnknown;
 }
 
 
@@ -374,7 +370,6 @@ static NSString * currentContactKey = @"currentContact";
         
     }
 
-    
     return [NSArray arrayWithArray:relatedNames];
 }
 

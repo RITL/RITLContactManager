@@ -8,6 +8,7 @@
 
 #import "RITLContactObject.h"
 #import <objc/runtime.h>
+#import "RITLContacts.h"
 
 
 /**
@@ -96,7 +97,7 @@ NSArray<NSString *> * propertyNames(id object)
     
     //name
     RITLContactNameObject * nameObject = [[RITLContactNameObject alloc]init];
-    nameObject.givenName = @"RITL_textName";
+    nameObject.givenName = RITLTESTNAME;
     
     testObject.nameObject = nameObject;
     

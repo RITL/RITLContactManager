@@ -17,5 +17,11 @@
     #define ContactFrameworkIsAvailable
 #endif
 
+#ifndef ContactFrameworkIsAvailable
+#define RITLTESTNAME (@"RITLTestNameAddressBook")
+#else
+#define RITLTESTNAME (@"RITLTestNameContact")
+#endif
+
 
 #endif /* RITLContacts_h */

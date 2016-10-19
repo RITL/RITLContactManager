@@ -50,18 +50,18 @@
     [super contactObject:contact];
     
     //设置姓名属性
-    self.nickName = contact.nickname;
-    self.givenName = contact.givenName;
-    self.familyName = contact.familyName;
-    self.middleName = contact.middleName;
-    self.namePrefix = contact.namePrefix;
-    self.nameSuffix = contact.nameSuffix;
-    self.phoneticGivenName = contact.phoneticGivenName;
-    self.phoneticFamilyName = contact.phoneticFamilyName;
-    self.phoneticMiddleName = contact.phoneticMiddleName;
+    self.nickName = contact.nickname;                   //昵称
+    self.givenName = contact.givenName;                 //名字
+    self.familyName = contact.familyName;               //姓氏
+    self.middleName = contact.middleName;               //中间名
+    self.namePrefix = contact.namePrefix;               //名字前缀
+    self.nameSuffix = contact.nameSuffix;               //名字的后缀
+    self.phoneticGivenName = contact.phoneticGivenName; //名字的拼音或音标
+    self.phoneticFamilyName = contact.phoneticFamilyName;//姓氏的拼音或音标
+    self.phoneticMiddleName = contact.phoneticMiddleName;//中间名的拼音或音标
     
 #ifdef __IPHONE_10_0
-    self.phoneticOrganizationName = contact.phoneticOrganizationName;
+    self.phoneticOrganizationName = contact.phoneticOrganizationName;//公司(组织)的拼音或音标
 #endif
 }
 

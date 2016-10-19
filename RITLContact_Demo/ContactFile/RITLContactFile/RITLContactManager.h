@@ -63,6 +63,9 @@ NS_CLASS_AVAILABLE_IOS(9_0) @interface RITLContactManager : NSObject
  */
 - (void)addContact:(RITLContactObject *)contact;
 
+
+
+
 @end
 
 NS_ASSUME_NONNULL_END

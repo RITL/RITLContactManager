@@ -129,6 +129,9 @@ NS_CLASS_AVAILABLE_IOS(7_0) @interface RITLContactObject : NSObject
 
 
 
+
+
+
 /**
  *  联系人的名字信息
  */

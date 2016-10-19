@@ -43,6 +43,7 @@ static NSNotificationName const addressBookDidChanged = @"RITLADDRESSBOOKDIDCHAN
         
         //收通知
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(__handleAddressBookDidChanged) name:addressBookDidChanged object:nil];
+        
     }
     
     return self;
@@ -181,7 +182,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     
     //释放资源
     CFRelease(allContacts);
-//    if(addressBook != NULL) CFRelease(addressBook);
+//    CFRelease(addressBook);
 }
 
 
