@@ -14,6 +14,8 @@
 @import ObjectiveC;
 @import Contacts;
 
+#define RITLLabelValue(x) ([CNLabeledValue localizedStringForLabel:x])
+
 static NSString * currentContactKey = @"currentContact";
 
 @implementation RITLContactObjectManager
@@ -157,7 +159,7 @@ static NSString * currentContactKey = @"currentContact";
         RITLContactEmailObject * emailObject = [[RITLContactEmailObject alloc]init];
         
         //setValue
-        emailObject.emailTitle = emailValue.label;
+        emailObject.emailTitle = RITLLabelValue(emailValue.label);
         emailObject.emailAddress = emailValue.value;
         
         [emails addObject:emailObject];
@@ -191,7 +193,8 @@ static NSString * currentContactKey = @"currentContact";
         RITLContactAddressObject * addressObject = [[RITLContactAddressObject alloc]init];
         
         //setValues
-        addressObject.addressTitle = addressValue.label;
+        addressObject.addressTitle = RITLLabelValue(addressValue.label);
+
         
         //setDetailValue
         [addressObject contactObject:addressValue.value];
@@ -228,9 +231,10 @@ static NSString * currentContactKey = @"currentContact";
         RITLContactPhoneObject * phoneObject = [RITLContactPhoneObject new];
         
         //setValue
-        phoneObject.phoneTitle = phoneValue.label;
+        phoneObject.phoneTitle = RITLLabelValue(phoneValue.label);
         phoneObject.phoneNumber = ((CNPhoneNumber *)phoneValue.value).stringValue;
         
+
         [phones addObject:phoneObject];
     }
     
@@ -363,7 +367,7 @@ static NSString * currentContactKey = @"currentContact";
         
         //set value
         relatedObject.identifier = relationsValue.identifier;
-        relatedObject.relatedTitle = relationsValue.label;
+        relatedObject.relatedTitle = RITLLabelValue(relationsValue.label);
         relatedObject.relatedName = ((CNContactRelation *)relationsValue.value).name;
         
         [relatedNames addObject:relatedObject];
