@@ -33,5 +33,36 @@ Contacts.framework是Apple在 iOS9.0 替代AddressBook.framework的框架，至�
 在iOS10上由于权限有很多的坑，本博文的内容需要使用通讯录权限.
 那么不要忘记在项目的info.plist文件中加入如下描述：`Privacy - Contacts Usage Description`，描述字符串:`RITL want to use your Contacts（这个随意）`，尽可能的写点东西吧，听说如果不写上线可能会被Apple拒绝..
 
-
-
+#用法如下:
+```
+//开始请求所有的联系人
+- (void)requestContacts
+{
+    __weak typeof(self) copy_self = self;
+    
+#ifdef __IPHONE_9_0
+    
+    //设置便利属性，为了提升速度，只要姓名以及电话属性
+    self.contactManager.descriptors = [NSString RITLContactNamePhoneKeys];
+    
+#endif
+    
+    //通讯发生变化进行的回调
+    self.contactManager.contactDidChange = ^(NSArray <RITLContactObject *>* contacts){
+      
+        [copy_self __reloadTableView:contacts];
+        
+    };
+    
+    //开始请求
+    [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
+        
+        [copy_self __reloadTableView:contacts];
+        
+    } defendBlock:^{
+        
+        //maybe you can present an AlerViewController to prompt user some message
+        
+    }];
+}
+```
