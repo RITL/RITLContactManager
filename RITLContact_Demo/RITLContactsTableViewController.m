@@ -54,7 +54,7 @@ static NSString * const reuseIdentifier = @"RightCell";
 {
     __weak typeof(self) copy_self = self;
     
-#ifdef __IPHONE_9_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 90000
     
     //设置便利属性，为了提升速度，只要姓名以及电话属性
     self.contactManager.descriptors = [NSString RITLContactNamePhoneKeys];

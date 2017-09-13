@@ -97,7 +97,17 @@ NSArray<NSString *> * propertyNames(id object)
     
     //name
     RITLContactNameObject * nameObject = [[RITLContactNameObject alloc]init];
-    nameObject.givenName = RITLTESTNAME;
+    
+    if (UIDevice.currentDevice.systemVersion.floatValue >= 9.0) {
+        
+        nameObject.givenName = RITLTESTNAMEADDRESSCONTACT;
+        
+    }else {
+        
+         nameObject.givenName = RITLTESTNAMEADDRESSBOOK;
+    }
+    
+    
     
     testObject.nameObject = nameObject;
     

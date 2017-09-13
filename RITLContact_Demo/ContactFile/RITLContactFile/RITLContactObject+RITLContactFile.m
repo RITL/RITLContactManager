@@ -60,9 +60,10 @@
     self.phoneticFamilyName = contact.phoneticFamilyName;//姓氏的拼音或音标
     self.phoneticMiddleName = contact.phoneticMiddleName;//中间名的拼音或音标
     
-#ifdef __IPHONE_10_0
-    self.phoneticOrganizationName = contact.phoneticOrganizationName;//公司(组织)的拼音或音标
-#endif
+    if (UIDevice.currentDevice.systemVersion.floatValue >= 10.0) {
+        
+        self.phoneticOrganizationName = contact.phoneticOrganizationName;//公司(组织)的拼音或音标
+    }
 }
 
 

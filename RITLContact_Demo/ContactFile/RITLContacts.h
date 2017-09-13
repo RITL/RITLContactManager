@@ -11,17 +11,9 @@
 
 
 #define isAvailableContactFramework ([UIDevice currentDevice].systemVersion.floatValue >= 9.0)
-//#define isAvailableContactFramework (false)//调试AddressBook
 
-#ifdef __IPHONE_9_0
-    #define ContactFrameworkIsAvailable
-#endif
-
-#ifndef ContactFrameworkIsAvailable
-#define RITLTESTNAME (@"RITLTestNameAddressBook")
-#else
-#define RITLTESTNAME (@"RITLTestNameContact")
-#endif
+#define RITLTESTNAMEADDRESSBOOK (@"RITLTestNameAddressBook")
+#define RITLTESTNAMEADDRESSCONTACT (@"RITLTestNameContact")
 
 
 #endif /* RITLContacts_h */

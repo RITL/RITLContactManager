@@ -234,7 +234,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
             NSLog(@"add success");
         }
         
-        CFErrorRef error;
+        CFErrorRef error = NULL;
         
         if (ABAddressBookHasUnsavedChanges(addressBook))
         {

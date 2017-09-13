@@ -15,7 +15,7 @@
 +(NSArray<id<CNKeyDescriptor>> *)RITLContactNameKeys
 {
     return @[
-#ifdef __IPHONE_10_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
              CNContactPhoneticOrganizationNameKey,
 #endif
              CNContactNamePrefixKey,
@@ -44,7 +44,7 @@
 +(NSArray <id<CNKeyDescriptor>> *)RITLContactAllKeys
 {
     return @[
-#ifdef __IPHONE_10_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
              CNContactPhoneticOrganizationNameKey,
 #endif
              //identifier

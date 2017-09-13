@@ -29,10 +29,10 @@
     self.phoneticFamilyName = nameObject.phoneticFamilyName;
     self.phoneticMiddleName = nameObject.phoneticMiddleName;
     
-#ifdef __IPHONE_10_0
-    self.phoneticOrganizationName = nameObject.phoneticOrganizationName;
-#endif
-    
+    if (UIDevice.currentDevice.systemVersion.floatValue >= 10.0) {
+        
+        self.phoneticOrganizationName = nameObject.phoneticOrganizationName;
+    }
 }
 
 

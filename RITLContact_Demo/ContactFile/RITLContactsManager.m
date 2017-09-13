@@ -10,29 +10,29 @@
 #import "RITLContactsManager.h"
 #import "RITLContacts.h"
 
-#ifdef ContactFrameworkIsAvailable
+//#ifdef ContactFrameworkIsAvailable
 #import "RITLContactManager.h"
-#else
+//#else
 #import "RITLAddressBookContactManager.h"
-#endif
+//#endif
 
 
 
 @interface RITLContactsManager ()
 
-#ifndef ContactFrameworkIsAvailable
+//#ifndef ContactFrameworkIsAvailable
 /**
  负责针对AddressBook进行数据请求的类
  */
 @property (nonatomic, strong) RITLAddressBookContactManager * addressBookContactManager;
 
-#else
+//#else
 /**
  负责针对Contact进行数据请求的类
  */
 @property (nonatomic, strong) RITLContactManager * contactManager NS_AVAILABLE_IOS(9_0);
 
-#endif
+//#endif
 
 @end
 
@@ -45,14 +45,17 @@
 {
     if (self = [super init])
     {
-#ifndef ContactFrameworkIsAvailable
+//#ifndef ContactFrameworkIsAvailable
         if (!isAvailableContactFramework)
         {
-          self.addressBookContactManager = [[RITLAddressBookContactManager alloc]init];
+            self.addressBookContactManager = [[RITLAddressBookContactManager alloc]init];
         }
-#else
-        self.contactManager = [[RITLContactManager alloc]init];
-#endif
+//#else
+        else {
+            
+            self.contactManager = [[RITLContactManager alloc]init];
+        }
+//#endif
         
     }
     
@@ -78,7 +81,7 @@
 -(void)requestContactsType:(ContactsType)contactType Complete:(void (^)(NSArray<RITLContactObject *> * _Nonnull))completeBlock defendBlock:(void (^)(void))defendBlock
 {
 
-#ifndef ContactFrameworkIsAvailable
+//#ifndef ContactFrameworkIsAvailable
     
     if (!isAvailableContactFramework)
     {
@@ -97,22 +100,24 @@
         }];
     }
     
-#else
-    //如果是contact
-    self.contactManager.descriptors = self.descriptors;
-    self.contactManager.contactDidChange = self.contactDidChange;
+//#else
+    else {
+        //如果是contact
+        self.contactManager.descriptors = self.descriptors;
+        self.contactManager.contactDidChange = self.contactDidChange;
+        
+        [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
+            
+            completeBlock(contacts);
+            
+        } defendBlock:^{
+            
+            defendBlock();
+            
+        }];
+    }
     
-    [self.contactManager requestContactsComplete:^(NSArray<RITLContactObject *> * _Nonnull contacts) {
-        
-        completeBlock(contacts);
-        
-    } defendBlock:^{
-        
-        defendBlock();
-        
-    }];
-    
-#endif
+//#endif
 }
 
 @end
@@ -124,11 +129,18 @@
 {
     if (contact == nil) return;
 
-#ifndef ContactFrameworkIsAvailable
-    [self.addressBookContactManager addContact:contact];
-#else
-    [self.contactManager addContact:contact];
-#endif
+//#ifndef ContactFrameworkIsAvailable
+    if (!isAvailableContactFramework) {
+        
+        [self.addressBookContactManager addContact:contact];
+    }
+   //#else
+    else {
+       
+        [self.contactManager addContact:contact];
+    }
+//#endif
+    
 }
 
 @end
