@@ -208,13 +208,19 @@
     //外传数组
     NSMutableArray <RITLContactAddressObject *> * addresses = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(values)];
     
+    CFIndex count = ABMultiValueGetCount(values);
+    
     //遍历添加
-    for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         RITLContactAddressObject * addressObject = [[RITLContactAddressObject alloc]init];
         
+        CFStringRef addressLabel = ABMultiValueCopyLabelAtIndex(values, i);
+        
         //赋值
-        addressObject.addressTitle = CFBridgingRelease(ABAddressBookCopyLocalizedLabel((ABMultiValueCopyLabelAtIndex(values, i))));                    //地址标签
+        addressObject.addressTitle = CFBridgingRelease(ABAddressBookCopyLocalizedLabel((addressLabel)));                    //地址标签
+        
+        CFRelease(addressLabel);
         
         //获得属性字典
         NSDictionary * dictionary = CFBridgingRelease(ABMultiValueCopyValueAtIndex(values, i));
@@ -254,8 +260,9 @@
     NSMutableArray <RITLContactPhoneObject *> * phones = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(values)];
     
     CFStringRef label;
+    CFIndex count = ABMultiValueGetCount(values);
     
-    for (NSInteger i = 0; i < ABMultiValueGetCount(values); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         RITLContactPhoneObject * phoneObject = [[RITLContactPhoneObject alloc]init];
         
@@ -375,8 +382,10 @@
     //存放数组
     NSMutableArray <RITLContactInstantMessageObject *> * instantMessages = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(messages)];
     
+    CFIndex count = ABMultiValueGetCount(messages);
+    
     //遍历获取值
-    for (NSInteger i = 0; i < ABMultiValueGetCount(messages); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         //获取属性字典
         NSDictionary * messageDictionary = CFBridgingRelease(ABMultiValueCopyValueAtIndex(messages, i));
@@ -406,18 +415,19 @@
     //获得多值属性
     ABMultiValueRef names = ABRecordCopyValue(recordRef, kABPersonRelatedNamesProperty);
     
+    CFIndex count = ABMultiValueGetCount(names);
+    
     //存放数组
-    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(names)];
+    NSMutableArray <RITLContactRelatedNamesObject *> * relatedNames = [NSMutableArray arrayWithCapacity:count];
     
-    CFStringRef label;
-    
+
     //遍历赋值
-    for (NSInteger i = 0; i < ABMultiValueGetCount(names); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         //初始化
         RITLContactRelatedNamesObject * relatedName = [[RITLContactRelatedNamesObject alloc]init];
         
-        label = ABMultiValueCopyLabelAtIndex(names, i);
+        CFStringRef label = ABMultiValueCopyLabelAtIndex(names, i);
         
         //赋值
         relatedName.relatedTitle = CFBridgingRelease(ABAddressBookCopyLocalizedLabel(label)); //关联的标签(如friend)
@@ -444,11 +454,13 @@
     //获得多值属性
     ABMultiValueRef profiles = ABRecordCopyValue(recordRef, kABPersonSocialProfileProperty);
     
+    CFIndex count = ABMultiValueGetCount(profiles);
+    
     //外传数组
-    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:ABMultiValueGetCount(profiles)];
+    NSMutableArray <RITLContactSocialProfileObject *> * socialProfiles = [NSMutableArray arrayWithCapacity:count];
     
     //遍历取值
-    for (NSInteger i = 0; i < ABMultiValueGetCount(profiles); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         //初始化对象
         RITLContactSocialProfileObject * socialProfileObject = [[RITLContactSocialProfileObject alloc]init];
@@ -464,6 +476,9 @@
         //添加
         [socialProfiles addObject:socialProfileObject];   
     }
+    
+    CFRelease(profiles);
+    
     return [NSArray arrayWithArray:socialProfiles];
 }
 @end
@@ -471,6 +486,7 @@
 
 
 @implementation RITLAddressBookContactObjectManager (ABRecordRef)
+
 
 +(ABRecordRef)recordRef:(RITLContactObject *)contactObject
 {
@@ -487,7 +503,7 @@
     [self __contactAddress:recordRef object:contactObject];
     [self __contactBrithday:recordRef object:contactObject];
     
-    return recordRef;
+    return CFAutorelease(recordRef);
 }
 
 
@@ -568,7 +584,6 @@
     CFErrorRef error = NULL;
     ABMultiValueRef phoneMultiValue = ABMultiValueCreateMutable(kABMultiStringPropertyType);
     
-    
     for (RITLContactPhoneObject * phoneObject in contact.phoneObject)
     {
         ABMultiValueIdentifier identifier;
@@ -645,7 +660,6 @@
     
     ABMultiValueRef addressMultiValue = ABMultiValueCreateMutable(kABMultiDictionaryPropertyType);
 
-
     //初始化字典属性
     CFMutableDictionaryRef addressDictionaryRef = CFDictionaryCreateMutable(kCFAllocatorSystemDefault, 0, NULL, NULL);
 
@@ -669,6 +683,7 @@
 
     //释放资源
     CFRelease(addressMultiValue);
+    CFRelease(addressDictionaryRef);
     
     return [self __errorExit:error];
 }
@@ -700,7 +715,7 @@
  */
 + (BOOL)__errorExit:(CFErrorRef)error
 {
-    if (error != NULL)
+    if (error)
     {
         NSLog(@"error = %@",error);
         CFRelease(error);

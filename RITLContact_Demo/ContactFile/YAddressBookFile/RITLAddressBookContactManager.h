@@ -22,7 +22,7 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactManager instead") @interface RI
 /**
  发生变化的回调,返回更新后的数组
  */
-@property (nonatomic, copy)void(^addressBookDidChange)(NSArray<RITLContactObject *>*) NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactManager instead");
+@property (nonatomic, copy)void(^addressBookDidChange)(NSArray<RITLContactObject *>*);
 
 
 /**
@@ -31,7 +31,7 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactManager instead") @interface RI
  @param completeBlock 获取到数据完成的回调
  @param defendBlock   没有权限进行的回调
  */
-- (void)requestContactsComplete:(void (^)(NSArray <RITLContactObject *> *))completeBlock defendBlock:(void(^)(void)) defendBlock NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactManager instead");
+- (void)requestContactsComplete:(void (^)(NSArray <RITLContactObject *> *))completeBlock defendBlock:(void(^)(void)) defendBlock;
 
 
 @end
@@ -45,7 +45,7 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactManager instead") @interface RI
 
  @param contact 添加的联系人对象
  */
-- (void)addContact:(RITLContactObject *)contact NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactManager instead");
+- (void)addContact:(RITLContactObject *)contact;
 
 @end
 

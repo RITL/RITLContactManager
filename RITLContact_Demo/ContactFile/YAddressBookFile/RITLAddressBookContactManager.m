@@ -16,7 +16,7 @@ static NSNotificationName const addressBookDidChanged = @"RITLADDRESSBOOKDIDCHAN
 @interface RITLAddressBookContactManager ()
 
 /// 请求通讯录的结构体对象
-@property (nonatomic, assign, nullable)ABAddressBookRef addressBook;
+@property (nonatomic)ABAddressBookRef addressBook;
 
 /// 获取到数据完成的回调
 @property(nonatomic, copy)void (^completeBlock)(NSArray<RITLContactObject *> * _Nonnull);
@@ -50,6 +50,20 @@ static NSNotificationName const addressBookDidChanged = @"RITLADDRESSBOOKDIDCHAN
 }
 
 
+-(void)dealloc
+{
+    //移除监听
+    ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
+    
+    //移除
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+    
+//    CFRelease(self.addressBook);
+    
+    NSLog(@"[dealloc][%@]",NSStringFromClass(self.class));
+}
+
+
 
 void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef info, void *context)
 {
@@ -75,18 +89,6 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 }
 
 
--(void)dealloc
-{
-    //移除监听
-    ABAddressBookUnregisterExternalChangeCallback(self.addressBook, addressBookChangeCallBack, (__bridge void *)(self));
-    
-    //移除
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-
-    CFRelease(self.addressBook);
-    
-    NSLog(@"%@ dealloc",NSStringFromClass([self class]));
-}
 
 
 
@@ -98,8 +100,6 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     //进行赋值
     self.completeBlock = completeBlock;
     self.defendBlock = defendBlock;
-    
-    
     
     //验证权限并进行下一步操作
     [self __checkAuthorizationStatus];
@@ -152,14 +152,17 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeople(addressBook);
 
     //按照排序规则请求所有的联系人
-    //    ABRecordRef recordRef = ABAddressBookCopyDefaultSource(addressBook);
+    //    ABRecordRef recordRef = ABAddressBookCopyDefaultSource(addressBook);//记得release
     //    CFArrayRef allContacts = ABAddressBookCopyArrayOfAllPeopleInSourceWithSortOrdering(addressBook, recordRef, kABPersonSortByFirstName);
     
     //存放所有联系人的数组
     NSMutableArray <RITLContactObject *> * contacts = [NSMutableArray arrayWithCapacity:CFArrayGetCount(allContacts)];
     
+    ///存放个数
+    CFIndex count = CFArrayGetCount(allContacts);
+    
     //遍历获取所有的数据
-    for (NSInteger i = 0; i < CFArrayGetCount(allContacts); i++)
+    for (NSInteger i = 0; i < count; i++)
     {
         //获得People对象
         ABRecordRef recordRef = CFArrayGetValueAtIndex(allContacts, i);
@@ -169,9 +172,6 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
         
         //添加对象
         [contacts addObject:contactObject];
-        
-        CFRelease(recordRef);
-        
     }
         
     if (completeBlock != nil)
@@ -182,7 +182,6 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
     
     //释放资源
     CFRelease(allContacts);
-//    CFRelease(addressBook);
 }
 
 
@@ -220,12 +219,9 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
 
 -(void)addContact:(RITLContactObject *)contact
 {
-    
-    NSLog(@"RITLAddressBookcontact add contact");
-    
     ABAddressBookRef addressBook = ABAddressBookCreate();
     
-    ABRecordRef recordRef = [RITLAddressBookContactObjectManager recordRef:contact];
+    ABRecordRef recordRef = CFRetain([RITLAddressBookContactObjectManager recordRef:contact]);
     
     dispatch_async(dispatch_get_main_queue(), ^{
        
@@ -234,7 +230,7 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
             NSLog(@"add success");
         }
         
-        CFErrorRef error = NULL;
+        CFErrorRef error = nil;
         
         if (ABAddressBookHasUnsavedChanges(addressBook))
         {
@@ -253,13 +249,10 @@ void addressBookChangeCallBack(ABAddressBookRef addressBook, CFDictionaryRef inf
         
         CFRelease(recordRef);
         
-        if (error != NULL)
+        if (error)
         {
-            //        CFRelease(error);
+            CFRelease(error);
         }
-        
-        CFRelease(addressBook);
-        
     });
 }
 

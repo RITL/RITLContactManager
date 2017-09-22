@@ -65,7 +65,7 @@
 
 -(void)dealloc
 {
-    NSLog(@"%@ dealloc",NSStringFromClass([self class]));
+    NSLog(@"[dealloc]-[%@]",NSStringFromClass([self class]));
 }
 
 
@@ -119,6 +119,8 @@
     
 //#endif
 }
+
+
 
 @end
 

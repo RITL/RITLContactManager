@@ -27,7 +27,7 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactObjectManager instead") @interf
  *
  *  @return RITLContactObject对象
  */
-+(RITLContactObject *)contantObject:(ABRecordRef)recordRef NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactObjectManager instead");
++(RITLContactObject *)contantObject:(ABRecordRef)recordRef;
 
 
 
@@ -38,13 +38,13 @@ NS_CLASS_DEPRECATED_IOS(2_0, 9_0,"Use RITLContactObjectManager instead") @interf
 @interface RITLAddressBookContactObjectManager (ABRecordRef)
 
 /**
- 根据RITLContactObject对象获得ABRecordRef数据
+ 根据RITLContactObject对象获得ABRecordRef数据,使用后请求手动管理ABRecordRef
  
  @param contactObject RITLContactObject对象
  
  @return ABRecordRef数据
  */
-+(ABRecordRef)recordRef:(RITLContactObject *)contactObject NS_DEPRECATED_IOS(2_0,9_0,"Use RITLContactObjectManager instead");
++(ABRecordRef)recordRef:(RITLContactObject *)contactObject;
 
 @end
 
